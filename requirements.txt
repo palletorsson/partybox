@@ -1,0 +1,6 @@
+Django
+South
+Pillow
+Requests
+gunicorn
+MySQL-python
