@@ -1,0 +1,120 @@
+{% load i18n %}
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="anon">
+    <meta name="author" content="anon">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+
+
+
+    {% block extra_head %} {% endblock %}
+
+    <title> {% block title %} {% trans "Partybox" %} {% endblock %} </title>
+<style>
+    body {
+        background-color:  #FAFAFA;
+    }
+    .post {
+    background-color: white;
+    float:left;
+    width:100%;
+    padding:10px;
+    margin-top:4px;
+    box-shadow: 0 0 0 1px #D1D1D1, 0 0 4px 1px #CCCCCC;
+    }
+    .margin-left {
+    margin-left:10px;
+    }
+    .margin-right {
+    margin-right:10px;
+    }
+    .margin-top {
+    margin-top:10px;
+    }
+    .pb-icon {
+        display: block;
+        font-weight: 500;
+
+        background-color: #563d7c;
+        border-radius: 15%;
+        cursor: default;
+        text-align: center;
+        }
+    .pb-icon-sml {
+
+        font-size: 20px;
+        line-height: 20px;
+        }
+    .pb-icon-outline {
+        background-color: transparent;
+        border: 1px solid #cdbfe3;
+    }
+
+    </style>
+
+</head>
+<body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+{%block allcontent%}
+<div class="nav">
+    <!-- Button trigger modal -->
+
+    <nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+  <form class="navbar-form navbar-left" role="modal">
+
+        <div class="form-group">
+          <div data-toggle="modal" data-target="#myModal"><input type="text" class="form-control" placeholder="Sharing is caring..."> </div>
+        </div>
+      <button class="btn btn-default" ><span class="glyphicon glyphicon-pencil"></span></button> |
+      <button class="btn btn-default" ><span class="glyphicon glyphicon-picture"></span></button>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="archive">Archive</a></li>
+      </ul>
+  </div><!-- /.container-fluid -->
+</nav>
+
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/add/" id="post" method="post">{% csrf_token %}
+        <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <textarea class="form-control" id="id_body" name="body"  rows="3"></textarea>
+      </div>
+      <div class="modal-footer">
+        <input type="submit" class="btn btn-primary" value="Share">
+
+      </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<!-- Columns are always 50% wide, on mobile and desktop -->
+<div class="margin-left margin-right">
+    <div class=".col-xs-12">
+    {% block posts %}
+
+    {% endblock %}
+    </div>
+</div>
+{%endblock%}
+
+</body>
+</html>
