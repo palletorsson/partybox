@@ -8,60 +8,95 @@
     <meta name="author" content="anon">
 
     <!-- Latest compiled and minified CSS -->
+       <link href="/media/index-rollup.css" type="text/css" rel="stylesheet">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+
+
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+       <script src="//cdn.jsdelivr.net/soundmanager2/2.97a.20131201/soundmanager2-jsmin.js"></script>
+    <script type="text/javascript" src="/media/index-rollup.js"></script>
 
+    <!--[if lte IE 8]>
+    <style>
+     h2.special {
+      /* IE 6-8 font reset, doesn't like sort-of-defined @font-family */
+      font-family:"helvetica neue",helvetica,arial,verdana,tahoma,"sans serif";
+     }
+    </style>
+    <![endif]-->
 
+    <script>
+    soundManager.setup({
+      // where to find flash audio SWFs, as needed
+      url: '/path/to/swf-files/',
+      onready: function() {
+        // SM2 is ready to play audio!
+      }
+    });
+    </script>
 
     {% block extra_head %} {% endblock %}
 
     <title> {% block title %} {% trans "Partybox" %} {% endblock %} </title>
-<style>
-    body {
-        background-color:  #FAFAFA;
-    }
-    .post {
-    background-color: white;
-    float:left;
-    width:100%;
-    padding:10px;
-    margin-top:4px;
-    box-shadow: 0 0 0 1px #D1D1D1, 0 0 4px 1px #CCCCCC;
-    }
-    .margin-left {
-    margin-left:10px;
-    }
-    .margin-right {
-    margin-right:10px;
-    }
-    .margin-top {
-    margin-top:10px;
-    }
-    .pb-icon {
-        display: block;
-        font-weight: 500;
-
-        background-color: #563d7c;
-        border-radius: 15%;
-        cursor: default;
-        text-align: center;
+    <style>
+        body {
+            background-color:  #FAFAFA;
         }
-    .pb-icon-sml {
+        .post {
+        background-color: white;
+        float:left;
+        width:100%;
+        padding:3px 5px 10px 5px;
+        margin-top:4px;
 
-        font-size: 20px;
-        line-height: 20px;
+        box-shadow: 0 0 0 1px #D1D1D1, 0 0 4px 1px #CCCCCC;
         }
-    .pb-icon-outline {
-        background-color: transparent;
-        border: 1px solid #cdbfe3;
-    }
+        .feedimg img {
+        width: 100%;
+        }
+        .margin-left {
+        margin-left:10px;
+        }
+        .margin-right {
+        margin-right:10px;
+        }
+        .margin-top {
+        margin-top:10px;
+        }
+        .pb-icon {
+            display: block;
+            font-weight: 500;
 
+            background-color: #563d7c;
+            border-radius: 15%;
+            cursor: default;
+            text-align: center;
+            }
+        .pb-icon-sml {
+
+            font-size: 20px;
+            line-height: 20px;
+            }
+        .pb-icon-outline {
+            background-color: transparent;
+            border: 1px solid #cdbfe3;
+        }
+        .text_fill {
+            width: 100%;
+            min-height: 10px;
+            padding: 10px 0 0;
+            color:#666;
+            margin:1em 1em 1.5em 0.2em;
+            padding:1.4em 1em 0.1em 1em;
+            border-left:2px solid ;
+        }
     </style>
 
 </head>
@@ -77,9 +112,8 @@
 
         <div class="form-group">
           <div data-toggle="modal" data-target="#myModal"><input type="text" class="form-control" placeholder="Sharing is caring..."> </div>
-        </div>
-      <button class="btn btn-default" ><span class="glyphicon glyphicon-pencil"></span></button> |
-      <button class="btn btn-default" ><span class="glyphicon glyphicon-picture"></span></button>
+         </div>
+
       </form>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="archive">Archive</a></li>
@@ -92,26 +126,51 @@
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form action="/add/" id="post" method="post">{% csrf_token %}
+      <form action="/add/"  enctype="multipart/form-data"  id="post" method="post">{% csrf_token %}
         <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <textarea class="form-control" id="id_body" name="body"  rows="3"></textarea>
-      </div>
-      <div class="modal-footer">
-        <input type="submit" class="btn btn-primary" value="Share">
-
-      </div>
-        </form>
+            <label for="id_document">Select a file: </label>
+                <input id="id_docfile" name="docfile" type="file" class="form-control">
+            <label for="id_body">Description: </label>
+                <textarea class="form-control" id="id_body" name="body" rows="3"></textarea>
+        </div>
+        <div class="modal-footer">
+            <input type="submit" class="btn btn-primary" value="Share">
+        </div>
+     </form>
     </div>
   </div>
 </div>
 
 <!-- Columns are always 50% wide, on mobile and desktop -->
-<div class="margin-left margin-right">
-    <div class=".col-xs-12">
+<div class="margin-left margin-right row">
+    <div class="col-md-3">
+         Last Posts
+    <hr />
     {% block posts %}
 
     {% endblock %}
+    </div>
+     <div class="col-md-3">
+    Last Audio <a class="pull-right">All Audio</a>
+    <hr />
+    {% block audio %}
+
+    {% endblock %}
+     </div>
+     <div class="col-md-3">
+    Last Images <a class="pull-right">All Images</a>
+    <hr />
+    {% block images %}
+
+    {% endblock %}
+     </div>
+     <div class="col-md-3">
+    Last Pdf <a class="pull-right">All PDFs</a>
+    {% block pdfs %}
+
+    {% endblock %}
+    <hr />
     </div>
 </div>
 {%endblock%}

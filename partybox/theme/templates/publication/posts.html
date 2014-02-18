@@ -3,30 +3,78 @@
 {% load fb_versions %}
 
 {% block posts %}
-  <div class="post">
+
+  <div>
+    {% if posts %}
     {% for p in posts  %}
         <div class="media post">
-        {{ p.doctype }}
+        <div class="">
+            {% if p.doctype = "jpg" or p.doctype = "png" %}
+                <span class="glyphicon glyphicon-picture"></span>
+            {% elif p.doctype = "mp3" %}
+                <span class="glyphicon glyphicon-volume-up"></span>
+            {% elif p.doctype = "pdf" %}
+                <span class="glyphicon glyphicon-file"></span>
+            {% else %}
+            <span class="glyphicon glyphicon-pencil"></span>
+            {% endif %}
 
-        {% if p.image %}
+        <span class="small pull-right">
+            | {{ p.datetime_created }}
+        </span>  </div>
+        <div class="media-body text_fill">
+            {{ p.body }}
+        </div>
+        {% if p.doctype = "jpg" or p.doctype = "png" %}
+            <a  class="pull-left" href="">
+                <img class="media-object feedimg" src="{% version p.docfile 'medium' %}" alt="image" />
+            </a>
+            {% elif p.doctype = "mp3" %}
+            <ul id="graphic-playlist" class="graphic">
+                <li><a href="/media/{{ p.docfile }}" class="exclude sm2_link sm2_paused">{{ p.docfile }}</a></li>
+            </ul>
 
-        <a  class=" pull-left" href="">
-            <img class="media-object" src="{% version p.image 'small' %}" alt="image" />
-        </a>
+            {% elif p.doctype = "pdf" %}
+                show pdf link
+            {% else %}
 
-        {% else %}
-
-         <a  class=" pull-left" href="">
-            <img class="media-object" data-src="holder.js/64x64" alt="64x64" style="width: 64px; height: 64px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACdElEQVR4Xu2Y229pQRTGv0ZcIhKKkCDUNUg8EOGFP7/iTurBNQT1QEKDCkH1nDWJ5jhJT8/Z+7Rp7DUvfZlZM+vb33y/mpvFYvEKBY8bFoAdwFeAM0DBGQgOQaYAU4ApwBRgCihYAcYgY5AxyBhkDCoYAvxjiDHIGGQMMgYZg4xBBSvAGJSLwc1mg1arhfV6Da1Wi0gkApPJdOGp8XiMdruNWCwGu93+od8+o+Z7m8pywPF4RC6Xg0qlQiAQQL/fx8vLCzKZzNt+y+USlUoFp9PprwT4jJp/UlyWALPZDA8PDwiHw3C5XNhut0IAg8Eg9jwcDigUCtBoNFitVm8CDIdDdLtd+Hw+uN1uMYfWpdNpkGBSan5oq3cmyBLg3IjVahVXQK1WIxQKwWw2i+3q9boQgRqt1WoXDqhWq3h6ehJz5/M54vE4LBYL5NSUIsJ/EYAO7vf70ev1xBfMZrN4fHzEYDBAIpHAbrdDo9FANBoVGUBXZr/fI5/Pi78ejwfBYFCc/yyAlJpfLsB0OhWNUfA5nU5MJhM0m02kUikReiTG7+N8XSjoisWisD65gISiIafmlwtA9r6/vxfpTzYfjUagxigEn5+fRXM06HqQO7xerxCKMqFUKonMcDgcYh2F6N3dnbgyUmrqdDop/ct/D6Cv3Ol0RMN6vV5kwO3t7cVh6I7/mgE0n5omLNpsNpTLZRGSyWQSRqNROOdfa0rq/uciWRkgddPvtI4FkPuf4Hf6mlLOwg5gB/CTGD+J8ZOYlPS8ljVMAaYAU4ApwBS4lkSX0gdTgCnAFGAKMAWkpOe1rGEKMAWYAkwBpsC1JLqUPhRPgR/pSmaf3gIvkAAAAABJRU5ErkJggg==">
-         <a/>
-
-        {% endif %}
-            <div class="media-body">
-        {{ p.body }}
-            </div>
+            {% endif %}
         </div>
     {% endfor %}
+    {% else %}
+      there are no post jet
+    {% endif %}
   </div>
 
 {%endblock%}
+{% block audio %}
+    {% if audio %}
+         <ul id="graphic-playlist" class="graphic">
+          {% for a in audio  %}
+            <div class="media post">
+               <div>
+                   <span class="glyphicon glyphicon-volume-up"></span> |
+               </div>
+                <li><a href="/media/{{ a.docfile }}" class="exclude sm2_link sm2_paused">{{ a.docfile }}</a></li>
+            </div>
+          {% endfor %}
+             </ul>
+    {% else %}
+      there are no audio jet
+    {% endif %}
+{%endblock%}
+{% block images %}
+    {% if images %}
+          {% for i in images  %}
+            <div class="media post">
+               <a  class=" pull-left" href="">
+                <img class="media-object feedimg" src="{% version i.docfile 'medium' %}" alt="image" />
+            </a>
+            </div>
+          {% endfor %}
+    {% else %}
+      there are no images jet
+    {% endif %}
+{%endblock%}
+
 

@@ -14,26 +14,36 @@ def AddPost(request):
         return HttpResponseRedirect(reverse('list_posts'))
 
 def Posts(request):
-    """
-    Handles posts
-    """
     postform = PostForm()
 
 
     posts = Post.objects.all().order_by('-datetime_created')
+
     posts.doctype = lambda: None
+    audio = Post.objects.filter(docfile__iendswith='mp3')
+    images = Post.objects.filter(docfile__iendswith='jpg')
 
     for p in posts:
-        string = str(p.document)
-        if string.endswith("mp3"):
+        string = str(p.docfile)
+        if string.endswith("jpg"):
+            p.doctype = "jpg"
+        elif string.endswith("png"):
+            p.doctype = "png"
+        elif string.endswith("mp3"):
             p.doctype = "mp3"
-        else:
+        elif string.endswith("ogg"):
+            p.doctype = "ogg"
+        elif string.endswith("pdf"):
             p.doctype = "pdf"
+        else:
+            p.doctype = "none"
 
 
     return render_to_response('publication/posts.html', {
             'posts': posts,
             'postform': postform,
+            'audio': audio,
+            'images': images,
         }, context_instance=RequestContext(request))
 
 
@@ -41,9 +51,11 @@ def save_post(request):
     """
     Saves a comment to the stream
     """
-    form = PostForm(request.POST)
+    form = PostForm(request.POST, request.FILES)
     if form.is_valid():
-        instance = form.save(commit=False)
-        instance.save()
+        newdoc = Post(docfile = request.FILES["docfile"], body = request.POST['body'])
+        newdoc.save()
+
     else:
         print form.errors
+
