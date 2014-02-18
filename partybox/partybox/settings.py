@@ -95,3 +95,8 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     '/home/palle/raspberry/partybox_env/partybox/partybox/theme/templates/',
 )
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
