@@ -8,7 +8,7 @@
     <meta name="author" content="anon">
 
     <!-- Latest compiled and minified CSS -->
-       <link href="/media/index-rollup.css" type="text/css" rel="stylesheet">
+       <link href="/static/css/index-rollup.css" type="text/css" rel="stylesheet">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
 
     <!-- Optional theme -->
@@ -21,7 +21,7 @@
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
        <script src="//cdn.jsdelivr.net/soundmanager2/2.97a.20131201/soundmanager2-jsmin.js"></script>
-    <script type="text/javascript" src="/media/index-rollup.js"></script>
+    <script type="text/javascript" src="/static/js/index-rollup.js"></script>
 
     <!--[if lte IE 8]>
     <style>
@@ -32,15 +32,26 @@
     </style>
     <![endif]-->
 
-    <script>
-    soundManager.setup({
-      // where to find flash audio SWFs, as needed
-      url: '/path/to/swf-files/',
-      onready: function() {
-        // SM2 is ready to play audio!
-      }
+
+<script src="/path/to/soundmanager2.js"></script>
+<script>
+soundManager.setup({
+  url: '/path/to/swf-files/',
+  onready: function() {
+    var mySound = soundManager.createSound({
+      id: 'aSound',
+      url: 'http://127.0.0.1:8000/media/documents/2014/08/01/04_Dead_On_It.mp3'
     });
-    </script>
+    
+	
+  },
+  ontimeout: function(err) {
+	console.log("jskjs"+err); 
+    // Hrmm, SM2 could not start. Missing SWF? Flash blocked? Show an error, etc.?
+  }
+});
+</script>
+
 
     {% block extra_head %} {% endblock %}
 
@@ -110,7 +121,7 @@
   <div class="container-fluid">
   <form class="navbar-form navbar-left" role="modal">
 
-        <div class="form-group">
+        <div class="form-group"> katten
           <div data-toggle="modal" data-target="#myModal"><input type="text" class="form-control" placeholder="Sharing is caring..."> </div>
          </div>
 
@@ -152,21 +163,21 @@
     {% endblock %}
     </div>
      <div class="col-md-3">
-    Last Audio <a class="pull-right">All Audio</a>
+    Resent Audio <a class="pull-right">All Audio</a>
     <hr />
     {% block audio %}
 
     {% endblock %}
      </div>
      <div class="col-md-3">
-    Last Images <a class="pull-right">All Images</a>
+    Resent Images <a class="pull-right">All Images</a>
     <hr />
     {% block images %}
 
     {% endblock %}
      </div>
      <div class="col-md-3">
-    Last Pdf <a class="pull-right">All PDFs</a>
+    Resent Documents <a class="pull-right">All PDFs</a>
     {% block pdfs %}
 
     {% endblock %}
