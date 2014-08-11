@@ -1,0 +1,40 @@
+var audio = [];
+// Array of files you'd like played
+audio.playlist = [
+    "/canvas/audio/Marissa_Car_Chase.mp3",
+    "/canvas/audio/Vortex_Battl_Thru_Danger.mp3",
+    "/canvas/audio/Gadgets_Activated.mp3",
+    "/canvas/audio/Kids_Run_Into_Agents.mp3",
+    "/canvas/audio/Jet_Luge_Chase.mp3"
+];
+ 
+function playAudio(playlistId){
+    // Default playlistId to 0 if not supplied
+    playlistId = playlistId ? playlistId : 0;
+    // If SoundManager object exists, get rid of it...
+    if (audio.nowPlaying){
+        audio.nowPlaying.destruct();
+        // ...and reset array key if end reached
+        if(playlistId == audio.playlist.length){
+            playlistId = 0;
+        }
+    }
+    // Standard Sound Manager play sound function...
+    soundManager.onready(function() {
+        audio.nowPlaying = soundManager.createSound({
+            id: 'sk4Audio',
+            url: audio.playlist[playlistId],
+            autoLoad: true,
+            autoPlay: true,
+            volume: 50,
+            // ...with a recursive callback when play completes
+            onfinish: function(){
+                playlistId ++;
+                playAudio(playlistId);
+            }
+        })
+    });
+}
+ 
+// Start
+playAudio[0];

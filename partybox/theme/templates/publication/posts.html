@@ -5,75 +5,94 @@
 {% block posts %}
 
   <div>
-    {% if posts %}
-    {% for p in posts  %}
-        <div class="media post">
-        <div class="">
-            {% if p.doctype = "jpg" or p.doctype = "png" %}
-                <span class="glyphicon glyphicon-picture"></span>
-            {% elif p.doctype = "mp3" %}
-                <span class="glyphicon glyphicon-volume-up"></span>
-            {% elif p.doctype = "pdf" %}
-                <span class="glyphicon glyphicon-file"></span>
-            {% else %}
-            <span class="glyphicon glyphicon-pencil"></span>
-            {% endif %}
+    <span data-toggle="modal" data-target="#messageModal"><span class="glyphicon glyphicon-pencil"></span><a>  Compose Message..</a> </span>| <span data-toggle="modal" data-target="#audioModal"> <span class="glyphicon glyphicon-music"> </span> <a>  Upload tracks..</a> </span> | <span class="glyphicon glyphicon-picture"></span> <span data-toggle="modal" data-target="#myModal"><a> Share images..</a></span>
+	{% if listing %}
+<div class="stream"></div>
+ 		{% for l in listing  %}
+		    {% if l.type == 'TextPost' %}
+			<div class="media post text_fill">
 
-        <span class="small pull-right">
-            | {{ p.datetime_created }}
-        </span>  </div>
-        <div class="media-body text_fill">
-            {{ p.body }}
+		        <span class="glyphicon glyphicon-pencil"></span> - {{ l.body }}  <span class="small pull-right">
+		        | {{ l.created }}
+		    </span> 
+		  
         </div>
-        {% if p.doctype = "jpg" or p.doctype = "png" %}
-            <a  class="pull-left" href="">
-                <img class="media-object feedimg" src="{% version p.docfile 'medium' %}" alt="image" />
+			{% endif %}
+
+			{% if l.type == 'ImagePost' %}
+				<div class="media post pull-left text_fill">
+               <a href="">
+                <img class="media-object stream_image" src="{% version l.imgfile 'medium' %}" alt="image" /> <div class="lable pull-right">{{l.created}}</div>
             </a>
-            {% elif p.doctype = "mp3" %}
-            <ul id="graphic-playlist" class="graphic">
-                <li><a href="/media/{{ p.docfile }}" class="exclude sm2_link sm2_paused">{{ p.docfile }}</a></li>
-            </ul>
+            </div>
+			{% endif %}
 
-            {% elif p.doctype = "pdf" %}
-                show pdf link
-            {% else %}
+ 			{% if l.type == 'Track' %}
+				<div class="media post text_fill">
+                <span class="glyphicon glyphicon-music"> </span> : {{ l.title }} by {{ l.author }}<span class="small pull-right">
+		        | {{ l.created }}
+		    </span> 
+            </div>
+			{% endif %}
+		    
+		
 
-            {% endif %}
-        </div>
     {% endfor %}
     {% else %}
-      there are no post jet
+    <span class="glyphicon glyphicon-pencil"></span> There are no messages jet... add one  <div data-toggle="modal" data-target="#messageModal"><a> Start typing... </a></div>
     {% endif %}
+    
+
   </div>
 
 {%endblock%}
 {% block audio %}
-    {% if audio %}
-         <ul id="graphic-playlist" class="graphic">
-          {% for a in audio  %}
-            <div class="media post">
-               <div>
-                   <span class="glyphicon glyphicon-volume-up"></span> |
-               </div>
-                <li><a href="/media/{{ a.docfile }}" class="exclude sm2_link sm2_paused">{{ a.docfile }}</a></li>
-            </div>
+    {% if tracks %}
+    <div data-toggle="modal" data-target="#audioModal"><a> All Tracks </a> </div>
+         <ul id="graphic-playlist" class="graphic the_playlist_list">
+
+          {% for t in tracks  %}
+                <div class="track_click" id="{{ t.pk }}" ><span class="glyphicon glyphicon-music"> </span>  {{ t.title }} by {{ t.author }}<span class="small pull-right">  <span class="glyphicon glyphicon-chevron-right track_clicker icon_hover" ></span> <span class="glyphicon glyphicon-list" id="{{ t.pk }}" > </span>
+</div>
           {% endfor %}
+
              </ul>
     {% else %}
-      there are no audio jet
+     <span class="glyphicon glyphicon-music"></span> There are no tracks jet... upload some <div data-toggle="modal" data-target="#audioModal"><a> Sharing is caring... </a> </div>
     {% endif %}
 {%endblock%}
 {% block images %}
     {% if images %}
+    <div data-toggle="modal" data-target="#myModal"><a> Share images...  </a></div>
           {% for i in images  %}
             <div class="media post">
                <a  class=" pull-left" href="">
-                <img class="media-object feedimg" src="{% version i.docfile 'medium' %}" alt="image" />
+              <img class="media-object feedimg" src="{% version i.imgfile 'medium' %}" alt="image" />  <div class="lable">hej</div>
             </a>
             </div>
           {% endfor %}
     {% else %}
-      there are no images jet
+      there are no images jet... add some <div data-toggle="modal" data-target="#myModal"><a> Images need... </a></div>
+    {% endif %}
+{%endblock%}
+
+{% block radio %}
+     <div data-toggle="modal" data-target="#audioModal">Current list Playing: Radio  </div>
+   {% if radio %}
+        <div class="radio_cat">
+		<div class="track_click"> Track <span class="small pull-right"> | Vote </span></div>
+        <div class="tracklistinsert">
+  {% for rt in radio  %}
+
+   <div class="track_click radio_cat" id="{{ rt.track.pk }}" > <span class="glyphicon glyphicon-music"></span>  {{ rt.track.title }}  ( {{ rt.track.author }} )<span class="small pull-right"> <span class="icon_hover glyphicon glyphicon-chevron-up vote_up" id="{{ rt.track.pk }}" > </span> |  <span class="icon_hover glyphicon glyphicon-chevron-down vote_down" id="{{ rt.track.pk }}" > </span>  </span>
+</div>
+            
+	
+  {% endfor %}
+</div>
+</div>
+   {% else %}
+      there are no images jet... add some <div data-toggle="modal" data-target="#myModal"><a> Images need... </a></div>
     {% endif %}
 {%endblock%}
 

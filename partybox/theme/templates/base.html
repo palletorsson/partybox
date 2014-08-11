@@ -8,20 +8,21 @@
     <meta name="author" content="anon">
 
     <!-- Latest compiled and minified CSS -->
-       <link href="/static/css/index-rollup.css" type="text/css" rel="stylesheet">
+    <link href="/static/css/index-rollup.css" type="text/css" rel="stylesheet">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
-     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
 
 
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-       <script src="//cdn.jsdelivr.net/soundmanager2/2.97a.20131201/soundmanager2-jsmin.js"></script>
+    <script src="//cdn.jsdelivr.net/soundmanager2/2.97a.20131201/soundmanager2-jsmin.js"></script>
     <script type="text/javascript" src="/static/js/index-rollup.js"></script>
+    <script type="text/javascript" src="/static/js/partybox.js"></script>
 
     <!--[if lte IE 8]>
     <style>
@@ -33,23 +34,83 @@
     <![endif]-->
 
 
-<script src="/path/to/soundmanager2.js"></script>
+
 <script>
-soundManager.setup({
-  url: '/path/to/swf-files/',
-  onready: function() {
-    var mySound = soundManager.createSound({
-      id: 'aSound',
-      url: 'http://127.0.0.1:8000/media/documents/2014/08/01/04_Dead_On_It.mp3'
+
+var audio = [];
+// Array of files you'd like played
+
+
+audio.playlist = [
+{% if radio %}
+	  {% for rt in radio  %}
+    "/media/{{ rt.track.docfile }}",
+    {% endfor %}
+{%endif%}
+];
+
+console.log(audio.playlist)
+function playAudio(playlistId){
+    // Default playlistId to 0 if not supplied
+    playlistId = playlistId ? playlistId : 0;
+    // If SoundManager object exists, get rid of it...
+    if (audio.nowPlaying){
+        audio.nowPlaying.destruct();
+        // ...and reset array key if end reached
+        if(playlistId == audio.playlist.length){
+            playlistId = 0;
+        }
+    }
+    // Standard Sound Manager play sound function...
+    soundManager.onready(function() {
+        audio.nowPlaying = soundManager.createSound({
+            id: 'sk4Audio',
+            url: audio.playlist[playlistId],
+            autoLoad: true,
+            autoPlay: true,
+            volume: 50,
+            // ...with a recursive callback when play completes
+			  onload: function() {
+				$.getJSON( "/getplaylist/", function( data ) {
+                var json_data = data;
+                var current_id = json_data.current;
+                var current_tracks = json_data.playlist;
+                console.log(json_data, current_id, current_tracks)
+				});
+
+			  },
+            onfinish: function(){
+				// Push first song at the end of the list 
+				// Get last playlist and other posts with jquery . update page and play new song 
+				$.getJSON( "/getlists/", function( data ) {
+					var playlist = $.parseJSON(data.playlist);
+                    var stream = $.parseJSON(data.stream);
+		            console.log(stream)
+					var list = $(".stream");
+					$.each(stream, function(i, obj) {
+						if (obj.model == "publication.textpost") {
+  							$("<div class='media post'><div class='media-body text_fill'>" + obj.fields['body'] + "</div><span class='small pull-right'>" + obj.fields['created'] + "</span></div>").appendTo(list);
+						}
+						if (obj.model == "publication.track") {
+      						$('<ul id="graphic-playlist" class="graphic"><div class="media post"><li><a href="/media/'+obj.fields['docfile']+' class="exclude sm2_link sm2_paused"> '+obj.fields['title']+'</a></li></div></ul>').appendTo(list);
+						}
+						if (obj.model == "publication.imagepost") {
+      						$('<div class="media post"><img src="/media/'+obj.fields['imgfile']+'" alt="image" class="stream_image"></a></div>').appendTo(list);
+						}
+					});		
+				});
+
+				
+				playlistId ++;
+                playAudio(playlistId);
+            }
+        })
     });
+}
+ 
+// Start
+playAudio(0);
     
-	
-  },
-  ontimeout: function(err) {
-	console.log("jskjs"+err); 
-    // Hrmm, SM2 could not start. Missing SWF? Flash blocked? Show an error, etc.?
-  }
-});
 </script>
 
 
@@ -104,46 +165,110 @@ soundManager.setup({
             min-height: 10px;
             padding: 10px 0 0;
             color:#666;
-            margin:1em 1em 1.5em 0.2em;
-            padding:1.4em 1em 0.1em 1em;
+            margin:10px 10px 15px 2px;
+            padding:4px 10px 1px 10px;
             border-left:2px solid ;
         }
+ 		.stream_image {
+			width: 100%;
+		}
+        .feedimg {
+
+			width: 155%;
+        }
+		
+		.lable {
+		position: relative;
+		bottom: 40px;
+        padding-left: 40px;
+		right: 10px;
+		background-color: white;
+       
+		filter: alpha(opacity=70);
+		-moz-opacity: 0.8;
+		-khtml-opacity: 0.8;
+		opacity: 0.8;
+		padding: 4px;
+		}
+        .track_click {
+			background-color: white;
+			border-bottom:1px solid ;
+			padding: 4px;
+			cursor:pointer;		
+		}
+		.track_click:hover
+		{ 
+			background-color:#FFF5EE;
+		}
+		.radio_cat:first-child
+		{ 
+		 background-color:yellow;
+		}
+		.icon_hover:hover {
+		 background-color:#CCFFFF;
+		}
+		span.glyphicon {
+			font-size: 1.4em;
+		}
     </style>
 
 </head>
 <body data-spy="scroll" data-target=".bs-docs-sidebar">
 
 {%block allcontent%}
-<div class="nav">
+
+
+</div>
+
+
+<!-- Columns are always 50% wide, on mobile and desktop -->
+<div class="back">
+	<div class="margin-left margin-right row">
+	  
+	  <div class="col-md-4">
+		<hr />
+		{% block posts %}
+
+		{% endblock %}
+		</div>
+		 <div class="col-md-3">
+		<hr />
+		{% block audio %}
+ 			<<div>
+                   <span class="glyphicon glyphicon-volume-up"></span> |
+               </div>
+		{% endblock %}
+		 </div>
+		 <div class="col-md-3">
+		<hr />
+		{% block radio %}
+
+		{% endblock %}
+		 </div>
+	</div>
+</div>
+
+{%endblock%}
+
+      <div class="nav">
     <!-- Button trigger modal -->
 
-    <nav class="navbar navbar-default" role="navigation">
-  <div class="container-fluid">
-  <form class="navbar-form navbar-left" role="modal">
-
-        <div class="form-group"> katten
-          <div data-toggle="modal" data-target="#myModal"><input type="text" class="form-control" placeholder="Sharing is caring..."> </div>
-         </div>
-
-      </form>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="archive">Archive</a></li>
+        <li><a href="about">About</a></li>
       </ul>
   </div><!-- /.container-fluid -->
 </nav>
 
-</div>
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- Message Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <form action="/add/"  enctype="multipart/form-data"  id="post" method="post">{% csrf_token %}
         <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <label for="id_document">Select a file: </label>
-                <input id="id_docfile" name="docfile" type="file" class="form-control">
-            <label for="id_body">Description: </label>
+        	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <label for="id_body">Compose: </label>
                 <textarea class="form-control" id="id_body" name="body" rows="3"></textarea>
+				<input type="hidden" value="message" class="form-control" id="id_form_type" name="form_type" rows="3">
         </div>
         <div class="modal-footer">
             <input type="submit" class="btn btn-primary" value="Share">
@@ -153,38 +278,46 @@ soundManager.setup({
   </div>
 </div>
 
-<!-- Columns are always 50% wide, on mobile and desktop -->
-<div class="margin-left margin-right row">
-    <div class="col-md-3">
-         Last Posts
-    <hr />
-    {% block posts %}
-
-    {% endblock %}
+<!-- Image Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/add/"  enctype="multipart/form-data"  id="post" method="post">{% csrf_token %}
+        <div class="modal-body">
+        	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <label for="id_document">Select a file: </label>
+                <input id="id_docfile" name="docfile" type="file" class="form-control">
+            <label for="id_body">Description: </label>
+                <textarea class="form-control" id="id_body" name="body" rows="3"></textarea>
+				<input type="hidden" value="image" class="form-control" id="id_form_type" name="form_type" rows="3">
+        </div>
+        <div class="modal-footer">
+            <input type="submit" class="btn btn-primary" value="Share">
+        </div>
+     </form>
     </div>
-     <div class="col-md-3">
-    Resent Audio <a class="pull-right">All Audio</a>
-    <hr />
-    {% block audio %}
-
-    {% endblock %}
-     </div>
-     <div class="col-md-3">
-    Resent Images <a class="pull-right">All Images</a>
-    <hr />
-    {% block images %}
-
-    {% endblock %}
-     </div>
-     <div class="col-md-3">
-    Resent Documents <a class="pull-right">All PDFs</a>
-    {% block pdfs %}
-
-    {% endblock %}
-    <hr />
-    </div>
+  </div>
 </div>
-{%endblock%}
+
+<!-- Track Modal -->
+<div class="modal fade" id="audioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/add/"  enctype="multipart/form-data"  id="post" method="post">{% csrf_token %}
+        <div class="modal-body">
+        	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <label for="id_document">Select a file: </label>
+                <input id="id_docfile" name="trackfile" type="file" class="form-control">
+            </div>
+ 				<input type="hidden" value="track" class="form-control" id="id_from_type" name="form_type" rows="3">
+        <div class="modal-footer">
+            <input type="submit" class="btn btn-primary" value="Share">
+        </div>
+     </form>
+    </div>
+  </div>
+</div>
+
 
 </body>
 </html>
