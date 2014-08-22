@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load fb_versions %}
+
+{% block posts %}
+<div class="main" ng-controller = "MyController">
+	<h4>    
+		<span data-toggle="modal" data-target="#messageModal">
+			<span class="glyphicon glyphicon-pencil"></span>
+			Messages | <a>Compose ...</a> 
+		</span>  
+	</h4>
+	<div class="text_stream">
+		<div class="messages" ng-repeat="item in messages">
+			{% verbatim %}
+		    <div class="media post text_fill">
+		        <span class="glyphicon glyphicon-pencil"></span> - {{item.fields.body}}  
+				<span class="small pull-right message_date">| {{item.fields.created}} </span>   
+            </div>	 
+			{% endverbatim %}
+		</div>
+</div>
+</div>
+ 		
+{%endblock%}
+
+{% block audio %}
+	<h4>
+		<div data-toggle="modal" data-target="#audioModal"> 
+			<span class="glyphicon glyphicon-music">
+			Tracks  | <a> Upload ...</a> 
+			</span> 
+		</div>
+		<div class="track_stream">
+<div class="main" ng-controller = "MyController">
+
+		<div class="songs" ng-repeat="item in songs">
+			{% verbatim %}
+<div class="media post text_fill track_click" id="{{ item.fields.pk }}" ><span class="glyphicon glyphicon-music"> </span>  <span class="track_title_author"> {{ item.fields.title }} <br/> By {{ item.fields.author }}</span> <span class="small pull-right"><span class="glyphicon glyphicon-plus track_clicker icon_hover" id="{{ item.fields.pk }}" ></span>Add</span>
+</div> 
+			{% endverbatim %}
+		</div>
+		</div>
+</div>
+{%endblock%}
+
+{% block radio %}
+	<h4>
+		<div> 
+			<span class="glyphicon glyphicon-music"> </span> 
+			Tracks | Playing from <span class="playing_type"> </span>
+		</div>
+	</h4>
+		<div class="main" ng-controller = "MyController">
+			<ul>
+
+			  <li class="tracks" ng-repeat="item in tracks">
+			  {% verbatim %}
+
+			  {{item.title}} {{item.pk}}  {{item.author}}  {{item.filename}} 
+				{% endverbatim %}
+
+			  </li>
+			</ul>
+		</div>
+
+	<h4> 
+		<div data-toggle="modal" data-target="#myModal">
+		Images | <a> Share ...  </a> 
+		</div> 
+	</h4>
+	<div class="stream"></div>
+	<div class="image_stream"></div>
+ 
+{%endblock%}
+
+
