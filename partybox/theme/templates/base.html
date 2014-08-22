@@ -1,6 +1,6 @@
 {% load i18n %}
 {% load staticfiles %}
-<html lang="en">
+<html lang="en" ng-app="myApp">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +9,19 @@
 
     <!-- Latest compiled and minified CSS -->
     <link href="/static/css/index-rollup.css" type="text/css" rel="stylesheet">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
-
+    <link rel="stylesheet" href="/static/css/bootstrap-theme.min.css">
 
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-    <script src="//cdn.jsdelivr.net/soundmanager2/2.97a.20131201/soundmanager2-jsmin.js"></script>
+    <script src="/static/js/angular.js"></script>
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/soundmanager2-jsmin.js"></script>
+    <script src="/static/js/controller.js"></script>
     <script type="text/javascript" src="/static/js/index-rollup.js"></script>
     <script type="text/javascript" src="/static/js/partybox.js"></script>
 
@@ -33,85 +34,6 @@
     </style>
     <![endif]-->
 
-
-
-<script>
-
-var audio = [];
-// Array of files you'd like played
-
-
-audio.playlist = [
-{% if radio %}
-	  {% for rt in radio  %}
-    "/media/{{ rt.track.docfile }}",
-    {% endfor %}
-{%endif%}
-];
-
-console.log(audio.playlist)
-function playAudio(playlistId){
-    // Default playlistId to 0 if not supplied
-    playlistId = playlistId ? playlistId : 0;
-    // If SoundManager object exists, get rid of it...
-    if (audio.nowPlaying){
-        audio.nowPlaying.destruct();
-        // ...and reset array key if end reached
-        if(playlistId == audio.playlist.length){
-            playlistId = 0;
-        }
-    }
-    // Standard Sound Manager play sound function...
-    soundManager.onready(function() {
-        audio.nowPlaying = soundManager.createSound({
-            id: 'sk4Audio',
-            url: audio.playlist[playlistId],
-            autoLoad: true,
-            autoPlay: true,
-            volume: 50,
-            // ...with a recursive callback when play completes
-			  onload: function() {
-				$.getJSON( "/getplaylist/", function( data ) {
-                var json_data = data;
-                var current_id = json_data.current;
-                var current_tracks = json_data.playlist;
-                console.log(json_data, current_id, current_tracks)
-				});
-
-			  },
-            onfinish: function(){
-				// Push first song at the end of the list 
-				// Get last playlist and other posts with jquery . update page and play new song 
-				$.getJSON( "/getlists/", function( data ) {
-					var playlist = $.parseJSON(data.playlist);
-                    var stream = $.parseJSON(data.stream);
-		            console.log(stream)
-					var list = $(".stream");
-					$.each(stream, function(i, obj) {
-						if (obj.model == "publication.textpost") {
-  							$("<div class='media post'><div class='media-body text_fill'>" + obj.fields['body'] + "</div><span class='small pull-right'>" + obj.fields['created'] + "</span></div>").appendTo(list);
-						}
-						if (obj.model == "publication.track") {
-      						$('<ul id="graphic-playlist" class="graphic"><div class="media post"><li><a href="/media/'+obj.fields['docfile']+' class="exclude sm2_link sm2_paused"> '+obj.fields['title']+'</a></li></div></ul>').appendTo(list);
-						}
-						if (obj.model == "publication.imagepost") {
-      						$('<div class="media post"><img src="/media/'+obj.fields['imgfile']+'" alt="image" class="stream_image"></a></div>').appendTo(list);
-						}
-					});		
-				});
-
-				
-				playlistId ++;
-                playAudio(playlistId);
-            }
-        })
-    });
-}
- 
-// Start
-playAudio(0);
-    
-</script>
 
 
     {% block extra_head %} {% endblock %}
@@ -165,8 +87,8 @@ playAudio(0);
             min-height: 10px;
             padding: 10px 0 0;
             color:#666;
-            margin:10px 10px 15px 2px;
-            padding:4px 10px 1px 10px;
+            margin: 1px 10px 6px 2px;
+            padding: 6px 10px 6px 10px;
             border-left:2px solid ;
         }
  		.stream_image {
@@ -193,6 +115,7 @@ playAudio(0);
         .track_click {
 			background-color: white;
 			border-bottom:1px solid ;
+			border-left:2px solid ;
 			padding: 4px;
 			cursor:pointer;		
 		}
@@ -210,6 +133,29 @@ playAudio(0);
 		span.glyphicon {
 			font-size: 1.4em;
 		}
+        .track_title_author {
+            display: inline-block;
+
+
+		}
+		.playing {
+			height:20px; 
+            border-right:4px solid; 
+		    background-color:#CCFFFF;
+		}
+        .current_song {
+
+		    background-color:#CCFFCC;
+            padding: 6px 3px 3px 3px;
+		}
+        .message_date {
+            padding: 6px 3px 3px 3px;
+
+		}
+        h4 {
+		    background-color:#FFF;
+
+       }
     </style>
 
 </head>
@@ -225,7 +171,7 @@ playAudio(0);
 <div class="back">
 	<div class="margin-left margin-right row">
 	  
-	  <div class="col-md-4">
+	  <div class="col-md-3">
 		<hr />
 		{% block posts %}
 
@@ -263,7 +209,7 @@ playAudio(0);
 <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form action="/add/"  enctype="multipart/form-data"  id="post" method="post">{% csrf_token %}
+      <form enctype="multipart/form-data" class="post" method="post">{% csrf_token %}
         <div class="modal-body">
         	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <label for="id_body">Compose: </label>
@@ -271,7 +217,7 @@ playAudio(0);
 				<input type="hidden" value="message" class="form-control" id="id_form_type" name="form_type" rows="3">
         </div>
         <div class="modal-footer">
-            <input type="submit" class="btn btn-primary" value="Share">
+            <input type="submit" class="btn btn-primary" value="Post">
         </div>
      </form>
     </div>
@@ -282,7 +228,7 @@ playAudio(0);
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form action="/add/"  enctype="multipart/form-data"  id="post" method="post">{% csrf_token %}
+      <form  enctype="multipart/form-data" class="post" method="post">{% csrf_token %}
         <div class="modal-body">
         	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <label for="id_document">Select a file: </label>
@@ -303,11 +249,11 @@ playAudio(0);
 <div class="modal fade" id="audioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form action="/add/"  enctype="multipart/form-data"  id="post" method="post">{% csrf_token %}
+      <form enctype="multipart/form-data" class="post" method="post">{% csrf_token %}
         <div class="modal-body">
         	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <label for="id_document">Select a file: </label>
-                <input id="id_docfile" name="trackfile" type="file" class="form-control">
+                <input id="id_trackfile" name="trackfile" type="file" class="form-control">
             </div>
  				<input type="hidden" value="track" class="form-control" id="id_from_type" name="form_type" rows="3">
         <div class="modal-footer">

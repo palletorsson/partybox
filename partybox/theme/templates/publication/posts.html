@@ -4,38 +4,16 @@
 
 {% block posts %}
 
-  <div>
-    <span data-toggle="modal" data-target="#messageModal"><span class="glyphicon glyphicon-pencil"></span><a>  Compose Message..</a> </span>| <span data-toggle="modal" data-target="#audioModal"> <span class="glyphicon glyphicon-music"> </span> <a>  Upload tracks..</a> </span> | <span class="glyphicon glyphicon-picture"></span> <span data-toggle="modal" data-target="#myModal"><a> Share images..</a></span>
+<h4>    <span data-toggle="modal" data-target="#messageModal"><span class="glyphicon glyphicon-pencil"></span>Messages | <a>Compose ...</a> </span>  </h4>
 	{% if listing %}
-<div class="stream"></div>
+<div class="text_stream"></div>
  		{% for l in listing  %}
 		    {% if l.type == 'TextPost' %}
 			<div class="media post text_fill">
-
-		        <span class="glyphicon glyphicon-pencil"></span> - {{ l.body }}  <span class="small pull-right">
-		        | {{ l.created }}
-		    </span> 
-		  
+		        <span class="glyphicon glyphicon-pencil"></span> - {{ l.body }}  
+				<span class="small pull-right message_date">| {{ l.created }} </span>   
         </div>
 			{% endif %}
-
-			{% if l.type == 'ImagePost' %}
-				<div class="media post pull-left text_fill">
-               <a href="">
-                <img class="media-object stream_image" src="{% version l.imgfile 'medium' %}" alt="image" /> <div class="lable pull-right">{{l.created}}</div>
-            </a>
-            </div>
-			{% endif %}
-
- 			{% if l.type == 'Track' %}
-				<div class="media post text_fill">
-                <span class="glyphicon glyphicon-music"> </span> : {{ l.title }} by {{ l.author }}<span class="small pull-right">
-		        | {{ l.created }}
-		    </span> 
-            </div>
-			{% endif %}
-		    
-		
 
     {% endfor %}
     {% else %}
@@ -48,11 +26,11 @@
 {%endblock%}
 {% block audio %}
     {% if tracks %}
-    <div data-toggle="modal" data-target="#audioModal"><a> All Tracks </a> </div>
-         <ul id="graphic-playlist" class="graphic the_playlist_list">
-
+    <h4><div data-toggle="modal" data-target="#audioModal"> <span class="glyphicon glyphicon-music"> </span> Tracks  | <a> Upload ...</a> </span> </div>
+         <ul id="graphic-playlist" class="graphic the_playlist_list"> </h4>
+          <div class="track_stream"></div>
           {% for t in tracks  %}
-                <div class="track_click" id="{{ t.pk }}" ><span class="glyphicon glyphicon-music"> </span>  {{ t.title }} by {{ t.author }}<span class="small pull-right">  <span class="glyphicon glyphicon-chevron-right track_clicker icon_hover" ></span> <span class="glyphicon glyphicon-list" id="{{ t.pk }}" > </span>
+                <div class="media post text_fill track_click" id="{{ t.pk }}" ><span class="glyphicon glyphicon-music"> </span>  <span class="track_title_author"> {{ t.title }} <br/> By {{ t.author }}</span> <span class="small pull-right"><span class="glyphicon glyphicon-plus track_clicker icon_hover" id="{{ t.pk }}" ></span>Add</span>
 </div>
           {% endfor %}
 
@@ -63,11 +41,11 @@
 {%endblock%}
 {% block images %}
     {% if images %}
-    <div data-toggle="modal" data-target="#myModal"><a> Share images...  </a></div>
+    <h4> <div data-toggle="modal" data-target="#myModal">Images | <a> Share ...  </a> </div> </h4>
           {% for i in images  %}
             <div class="media post">
                <a  class=" pull-left" href="">
-              <img class="media-object feedimg" src="{% version i.imgfile 'medium' %}" alt="image" />  <div class="lable">hej</div>
+              <img class="media-object feedimg" src="{% version i.imgfile 'medium' %}" alt="image" />  <div class="lable"></div>
             </a>
             </div>
           {% endfor %}
@@ -77,23 +55,58 @@
 {%endblock%}
 
 {% block radio %}
-     <div data-toggle="modal" data-target="#audioModal">Current list Playing: Radio  </div>
-   {% if radio %}
+     <h4><div> <span class="glyphicon glyphicon-music"> </span> Tracks | Playing from <span class="playing_type"> </span></div></h4>
+{% verbatim %}
+<div class="main" ng-controller = "MyController">
+    <ul>
+      <li class="tracks" ng-repeat="item in tracks">
+ {{item.title}} {{item.pk}}  {{item.author}}  {{item.filename}} 
+        </li>
+    </ul>
+  </div>
+
+{% endverbatim %}
+
+   {% if radio %}	
+
         <div class="radio_cat">
-		<div class="track_click"> Track <span class="small pull-right"> | Vote </span></div>
+
+
+		<div class="media post text_fill track_click"> Track <span class="small pull-right"> | Vote </span></div>
+	
         <div class="tracklistinsert">
   {% for rt in radio  %}
 
-   <div class="track_click radio_cat" id="{{ rt.track.pk }}" > <span class="glyphicon glyphicon-music"></span>  {{ rt.track.title }}  ( {{ rt.track.author }} )<span class="small pull-right"> <span class="icon_hover glyphicon glyphicon-chevron-up vote_up" id="{{ rt.track.pk }}" > </span> |  <span class="icon_hover glyphicon glyphicon-chevron-down vote_down" id="{{ rt.track.pk }}" > </span>  </span>
+   <div class="media post text_fill track_click radio_cat" id="{{ rt.track.pk }}" > <span class="glyphicon glyphicon-music"></span> <span class="track_title_author"> {{ rt.track.title }} <div>  {{ rt.track.author }} </div> <span class="small pull-right"> <span class="icon_hover glyphicon glyphicon-chevron-up vote_up" id="{{ rt.track.pk }}" > </span> |  <span class="icon_hover glyphicon glyphicon-chevron-down vote_down" id="{{ rt.track.pk }}" > </span>  </span>
 </div>
             
 	
   {% endfor %}
 </div>
 </div>
-   {% else %}
-      there are no images jet... add some <div data-toggle="modal" data-target="#myModal"><a> Images need... </a></div>
+   {% else %}        
+		<div class="tracklistinsert">
+      Add tracks to playlist by licking the right arrow of the track list. 
+		</div>
     {% endif %}
+ <hr>
+  <div>
+    <h4> <div data-toggle="modal" data-target="#myModal">Images | <a> Share ...  </a> </div> </h4>{% if listing %}
+<div class="stream"></div>
+<div class="image_stream"></div>
+ 		{% for l in listing  %}
+			{% if l.type == 'ImagePost' %}
+				<div class="media post pull-left text_fill">
+                <img class="media-object stream_image" src="{% version l.imgfile 'medium' %}" alt="image" /> <div class="lable pull-right">{{l.created}}</div>
+            </div>
+			{% endif %}
+
+
+    {% endfor %}
+    {% else %}
+    <span class="glyphicon glyphicon-pencil"></span> There are no messages jet... add one  <div data-toggle="modal" data-target="#messageModal"><a> Start typing... </a></div>
+    {% endif %}
+  </div>
 {%endblock%}
 
 
