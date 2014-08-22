@@ -79,7 +79,10 @@ def Posts(request):
         sessionid = None
 
     if sessionid == None: 
-        sessionid = request.META['XDG_SESSION_COOKIE'][:32]
+        try:
+            sessionid = request.META['XDG_SESSION_COOKIE'][:32]
+        except: 
+            hassession = False
 
     if sessionid == None: 
         hassession = False
