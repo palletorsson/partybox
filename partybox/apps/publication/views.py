@@ -9,6 +9,9 @@ from itertools import chain
 from django.http import HttpResponse, Http404
 from django.core import serializers
 import json
+from django.http import HttpResponseNotAllowed
+from datetime import datetime
+from django.contrib.sessions.backends.db import SessionStore
 
 # models for metadata extraction
 from hachoir_core.error import HachoirError
@@ -24,29 +27,68 @@ from hachoir_parser import guessParser
 from hachoir_metadata import extractMetadata
 
 
+
+
 def AddPost(request):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed('Love')
+
     if request.POST:
         form_type = request.POST["form_type"]
-        	
+
         if form_type == 'image':
         	save_img_post(request)
         elif form_type == 'message':
         	save_message_post(request)
         else:
             save_audio_post(request)
+              
 
-        return HttpResponseRedirect(reverse('list_posts'))
+    return HttpResponse('200')
 
+def Home(request):
+    return render_to_response('publication/home.html')
+
+
+def JsonMessages(request):
+    texts = TextPost.objects.all().order_by('-created')
+    json_list = serializers.serialize('json', texts)
+    print json_list
+    returndata = json.dumps(json_list)
+
+    response = HttpResponse(json_list, mimetype='application/json')
+    return response
+
+def JsonTracks(request): 
+    tracks = Track.objects.all().order_by('-created')
+    json_list = serializers.serialize('json', tracks)
+    print json_list
+    returndata = json.dumps(json_list)
+
+    response = HttpResponse(json_list, mimetype='application/json')
+    return response
 
 def Posts(request):
     texts = TextPost.objects.all().order_by('-created')
     images = ImagePost.objects.all().order_by('-created')
     tracks = Track.objects.all().order_by('-created')
 
-    sessionid = request.COOKIES['sessionid']
+    try:
+        sessionid = request.COOKIES['sessionid']
+    except: 
+        sessionid = None
 
-    p, created = sessionUser.objects.get_or_create(session_id=sessionid)
-    p.save()
+    if sessionid == None: 
+        sessionid = request.META['XDG_SESSION_COOKIE'][:32]
+
+    if sessionid == None: 
+        hassession = False
+    else:
+        hassession = True
+
+    if (hassession):
+        p, created = sessionUser.objects.get_or_create(session_id=sessionid)
+        p.save()
        
     try:
         radio_list = PlayList.objects.get(pk=1).tracklisted_set.all()
@@ -57,6 +99,10 @@ def Posts(request):
     listing = MakeStreamList(texts, images, tracks)
 
     json_list = serializers.serialize('json', listing)
+
+    for t in tracks: 
+        t.title = t.title[:38]
+        t.author = t.author[:38] 
 
     for k in listing:
         k.type = k.__class__.__name__
@@ -83,8 +129,9 @@ def MakeStreamList(texts, images, tracks):
 
 def GetPlaylist(request): 
     returnjson = {
+        'type':'',
 		'playlist': '',
-        'playlist_names': '',  
+        'current_track': '',  
         'current': '',
             }
     try:
@@ -92,23 +139,36 @@ def GetPlaylist(request):
     except: 
 		radio_list = None
     
+    print radio_list
+
+    for t in radio_list: 
+        t.track.title = t.track.title[:20]
+        t.track.author = t.track.author[:20] 
+
     radio_list_as_list = []
     radio_list_as_list_titles = []
-    current = radio_list[0].pk
-
-    for track in radio_list:
-        temp = {"title":track.track.title, "file":str(track.track.docfile), "pk":track.track.pk, "author":track.track.author }
-        radio_list_as_list.append(temp)    
-
-
-    print radio_list_as_list
-
-
-    returnjson['playlist'] = radio_list_as_list 
-    returnjson['playlist_names'] = radio_list_as_list_titles 
-    returnjson['current'] = current 
- 	
+          
+    if radio_list: 
+        returnjson['type'] = "List"
+        current = radio_list[0].pk
+        for track in radio_list:
+            temp = {"title":track.track.title, "file":str(track.track.docfile), "pk":track.track.pk, "author":track.track.author }
+            radio_list_as_list.append(temp)
+        returnjson['current_track'] = str(radio_list[0].track.docfile)
+        returnjson['current'] = current 
+        returnjson['playlist'] = radio_list_as_list  	
+    else: 
+        returnjson['type'] = "Random"
+        track = Track.objects.order_by('?')[0]
+        print track
+        returnjson['current_track'] = str(track.docfile)
+        returnjson['current'] = track.pk
+        temp = {"title":track.title, "file":str(track.docfile), "pk":track.pk, "author":track.author }
+        radio_list_as_list.append(temp)
+        returnjson['playlist'] = radio_list_as_list
+    
     returndata = json.dumps(returnjson)
+
     response = HttpResponse(returndata, mimetype='application/json')
     return response
 
@@ -119,6 +179,7 @@ def GetLists(request):
             }
 
     sessionid = request.COOKIES['sessionid']
+    
     user = sessionUser.objects.get(session_id=sessionid)
     time_threshold = user.last_time_update
 
@@ -128,13 +189,20 @@ def GetLists(request):
     images = ImagePost.objects.filter(created__gte=time_threshold).order_by('-created')
     tracks = Track.objects.filter(created__gte=time_threshold).order_by('-created')
 
+
+    for t in texts:
+        t.created = datetime.strptime(str(t.created)[:19], "%Y-%m-%d %H:%M:%S")
+
+    for i in images:
+        i.created = datetime.strptime(str(i.created)[:19], "%Y-%m-%d %H:%M:%S")
+
     imgform = ImageForm()
     listing = MakeStreamList(texts, images, tracks)
 
+
     for k in listing:
         k.type = k.__class__.__name__
-        print k.type
-
+ 
 
     json_list = serializers.serialize('json', listing)
 
@@ -165,12 +233,12 @@ def save_message_post(request):
 
     if form.is_valid():
         newdoc = TextPost(body = request.POST["body"])
-        newdoc.save()
+        newdoc.save()   
+        return_obj = TextPost.objects.all().order_by('-created')[:1]
     else:
         print form.errors
-
-
-
+ 
+    return return_obj 
 
 def save_audio_post(request):
     """
@@ -180,6 +248,7 @@ def save_audio_post(request):
     if form.is_valid():
         the_track_file = request.FILES["trackfile"]
         meta = metadata_for_filelike(the_track_file)
+        print meta
         newdoc = Track(docfile = request.FILES["trackfile"]) 
 
         try:
@@ -218,6 +287,16 @@ def save_audio_post(request):
 def AddTrackToPlayList(request, track_id):
     if request.method == 'GET':
         print track_id
+    try:
+        sessionid = request.COOKIES['sessionid']
+    except:
+        sessionid = None
+
+    if sessionid == None: 
+        s = SessionStore()
+        s.save()
+        sessionid = s.session_key
+        print sessionid
 
     pl = PlayList.objects.get(pk=1)
     try:
@@ -247,8 +326,6 @@ def AddTrackToPlayList(request, track_id):
         count = len(p) + 1
         TrackListed.objects.create(playlist=pl, track=track1, position=count)
 
-    sessionid = request.COOKIES['sessionid']
-
     p, created = Vote.objects.get_or_create(session_id=sessionid)
 
     if created: 
@@ -265,18 +342,16 @@ def AddTrackToPlayList(request, track_id):
     return HttpResponse(track_id)
 
 def RemoveTrackFromPlaylist(request, track_id):
-    try:
-        track1 = Track.objects.get(pk=track_id)
-    except Track.DoesNotExist:
-        raise Http404	
 
     pl = PlayList.objects.get(pk=1)
 
     try:
-    	track_listed = TrackListed.objects.get(playlist=pl, track=track1)
+    	track_listed = TrackListed.objects.get(playlist=pl, pk=track_id)
     except TrackListed.DoesNotExist:
        track_listed = None
+       raise Http404
 
+    print track_listed
     if track_listed:
         track_listed.delete()
     return HttpResponse(track_id)
