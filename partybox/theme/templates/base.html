@@ -161,6 +161,16 @@
 </head>
 <body data-spy="scroll" data-target=".bs-docs-sidebar">
 
+{% verbatim %}
+<div class="main" ng-controller = "MyController">
+    <ul>
+      <li class="tracks" ng-repeat="item in tracks">
+ {{item.title}} {{item.pk}}  {{item.author}}  {{item.filename}} 
+        </li>
+    </ul>
+  </div>
+
+{% endverbatim %}
 {%block allcontent%}
 
 

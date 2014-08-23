@@ -29,6 +29,7 @@ class Track(models.Model):
     def __unicode__(self):
         return u'%s' %self.title
 
+
 class PlayList(models.Model): 
     title =       models.CharField(max_length=128)
     description = models.CharField(max_length=256, blank=True, null=True)
