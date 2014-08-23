@@ -8,22 +8,22 @@
     <meta name="author" content="anon">
 
     <!-- Latest compiled and minified CSS -->
-    <link href="{% static 'css/index-rollup.css' %}" type="text/css" rel="stylesheet">
-    <link href="{% static 'css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+    <link href="/static/css/index-rollup.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     
 
     <!-- Optional theme -->
-    <link href="{% static 'css/bootstrap-theme.min.css' %}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap-theme.min.css">
 
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="{% static 'js/angular.js' %}"></script>
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/soundmanager2-jsmin.js' %}"></script>
-    <script src="{% static 'js/controller.js' %}"></script>
-    <script src="{% static 'js/index-rollup.js' %}"></script>
-    <script src="{% static 'js/partybox.js' %}"></script>
+    <script src="/static/js/angular.js"></script>
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/soundmanager2-jsmin.js"></script>
+    <script src="/static/js/controller.js"></script>
+    <script type="text/javascript" src="/static/js/index-rollup.js"></script>
+    <script type="text/javascript" src="/static/js/partybox.js"></script>
 
     <!--[if lte IE 8]>
     <style>
@@ -161,6 +161,18 @@
 </head>
 <body data-spy="scroll" data-target=".bs-docs-sidebar">
 
+{% verbatim %}
+
+<div class="main" ng-controller = "MyController">
+    <ul>
+      <li class="tracks" ng-repeat="item in tracks">
+ {{item.title}} {{item.pk}}  {{item.author}}  {{item.filename}} 
+        </li>
+    </ul>
+  </div>
+
+
+{% endverbatim %}
 {%block allcontent%}
 
 
