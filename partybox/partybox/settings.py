@@ -15,10 +15,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 PROJECT_ROOT        = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
 STATIC_ROOT         = os.path.join(PROJECT_ROOT, 'static')
+print STATIC_ROOT
 STATIC_URL 			= STATIC_ROOT+"/" 
 MEDIA_ROOT          = os.path.join(PROJECT_ROOT, 'media')
-MEDIA_URL 			= MEDIA_ROOT+"/"
-
+MEDIA_URL = "/media/"
+#MEDIA_URL 			= MEDIA_ROOT+"/"
+STATIC_URL_PLAIN = "/static/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -90,13 +92,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 
-
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+<<<<<<< HEAD
 
     '/home/pi/partybox/partybox/partybox/theme/templates/',
+=======
+	'/home/palle/Project/django/partybox/partybox/partybox/theme/templates/',
+>>>>>>> d871339010d6c7d4753fb40bbf9fa8dc5fc6f2fc
 )
 
 try:
