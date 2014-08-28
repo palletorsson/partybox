@@ -1,19 +1,21 @@
 $(function() {
- 
+
 $(".post").submit(function(event){
 
 var data = new FormData(this);
-this.reset();
+ 
 event.preventDefault();
 	$.ajax({
 		type:"POST",
 		url:"/add/",
 		data: data,
+
 		cache: false,
 		processData: false,
 		contentType: false,
 		success: function(data) {
 		    $.getJSON( "/getlists/", function( data ) {
+				console.log(data)
 		        var stream = $.parseJSON(data.stream);
 				var message_list = $(".text_stream");
 				var image_list = $(".image_stream");
@@ -26,24 +28,19 @@ event.preventDefault();
 				$.each(stream, function(i, obj) {
 					if (obj.model == "publication.textpost") {
 						$("<div class='media post  pull-left  text_fill'><span class='glyphicon glyphicon-pencil'></span>  " + obj.fields['body'] + "<span class='small pull-right message_date'> | " + obj.fields['created'] + "</span></div>").prependTo( message_list);
-
-
 					}
 					if (obj.model == "publication.track") {
 						$('<div class="media post text_fill track_click" id="'+obj.fields['pk']+'" > <span class="glyphicon glyphicon-music"></span> <span class="track_title_author"> '+obj.fields['title']+' <br/> By  '+obj.fields['author']+' </div> <span class="small pull-right"> <span class="glyphicon glyphicon-plus track_clicker icon_hover" id="'+obj.fields['pk']+'" > </span> Add </span>').prependTo(track_list);
-				  
-
 					}
 					if (obj.model == "publication.imagepost") {
 						$('<div class="media post pull-left text_fill"><img class="media-object stream_image" src="/media/'+obj.fields['imgfile']+'" alt="image" class="stream_image"> <div class="lable pull-right">'+obj.fields['created']+'</div></div>').prependTo(image_list);
 					}
-
-
 				});			
 			}); 
 		}	
 
 	});
+this.reset();
 });
 
 
@@ -51,8 +48,10 @@ event.preventDefault();
 
 var sound = "on"; 
 var ready = function () {
+	console.log("ready")
 
-   $('.current_song').click(function(e){
+
+	$('.mute_song').click(function(e){
 		if (sound == "on") {
 			sound = "off"
 			audio.nowPlaying.mute()
@@ -62,24 +61,14 @@ var ready = function () {
 		} 		 
 	});
 
-    $('.track_clicker').click(function(e){
-		var id = this.id;
-		$.get("/list/"+id+'', function(response) {
- 			$.get("/getplaylist/", function(data) {
-			    update_playlist(data);
-				setTimeout(function(){ready()}, 500);
-			});			
-		});   		 
-    });
-
-	 $('.vote_down').click(function(e){
+	$('.vote_down').click(function(e){
 		var id = this.id;
 		$.get("/votetrackdown/"+id+'', function(response) {
 		$.get("/getplaylist/", function(data) {
 			update_playlist(data); 
 			setTimeout(function(){ready()}, 500);
 		});
-  		}); 
+  	}); 
 
 	 });
 
@@ -117,7 +106,7 @@ function playAudio(playlistId){
             volume: 10,
 			whileplaying: function() {
 				if (this.position % 23 < 1 ) {
-					var w = parseInt((this.position/this.duration)*400);
+					var w = parseInt((this.position/this.duration)*200);
 					var player_bar_el = $("#playbar"); 		  			 
 					player_bar_el.width(w+"px");     
 				} 
@@ -212,7 +201,7 @@ var update_playlist = function (data) {
         var type = data.type
 		playlist_el.html('')
 		$.each(list, function(i, track) {
-		playlist_el.append("<div class='media post text_fill track_click radio_cat' id='" + track['pk'] + "'> <span class='glyphicon glyphicon-music'></span>"+ track['title']  + " ( "+ track['author']+ " )"+"<span class='small pull-right'> <span class='icon_hover glyphicon glyphicon-chevron-up vote_up' id='"+track['pk']+"'> </span> | <span class='icon_hover glyphicon glyphicon-chevron-down vote_down' id='"+track['pk']+"' ></span></span>");  
+		playlist_el.append("<div class='media post text_fill track_click radio_cat' id='" + track['pk'] + "'> <span class='glyphicon glyphicon-music'></span> "+ track['title']  + " ( "+ track['author']+ " )"+"<span class='small pull-right'> <span class='icon_hover glyphicon glyphicon-chevron-up vote_up' id='"+track['pk']+"'> </span> | <span class='icon_hover glyphicon glyphicon-chevron-down vote_down' id='"+track['pk']+"' ></span></span>");  
 	   });
 	}
     return "ok"; 
