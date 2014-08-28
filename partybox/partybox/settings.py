@@ -96,12 +96,10 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-<<<<<<< HEAD
+
 
     '/home/pi/partybox/partybox/partybox/theme/templates/',
-=======
-	'/home/palle/Project/django/partybox/partybox/partybox/theme/templates/',
->>>>>>> d871339010d6c7d4753fb40bbf9fa8dc5fc6f2fc
+
 )
 
 try:
