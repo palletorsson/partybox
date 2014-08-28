@@ -1,11 +1,12 @@
 from django.conf.urls import url, patterns
-from apps.publication.views import Posts, AddPost, AddTrackToPlayList, GetLists, GetPlaylist, RemoveTrackFromPlaylist, Home, VoteTrackUp, VoteTrackDown, JsonMessages, JsonTracks
+from apps.publication.views import Posts, AddPost, AddTrackToPlayList, GetLists, GetPlaylist, RemoveTrackFromPlaylist, Home, VoteTrackUp, VoteTrackDown, JsonMessages, JsonImages, JsonTracks
 
 urlpatterns = patterns('',
-    url(r'^/*$', Posts, name= 'list_posts'),
+    url(r'^/*$', Home, name= 'home'),
     url(r'^home/$', Home, name= 'home'),
     url(r'^add/$', AddPost, name= 'add_post'),
     url(r'^messages/$', JsonMessages, name= 'jsonmessages'),
+    url(r'^images/$', JsonImages, name= 'jsonimages'),
     url(r'^tracks/$', JsonTracks, name= 'jsontracks'),
     url(r'^list/(?P<track_id>[-_\w]+)/$', AddTrackToPlayList, name= 'addtrack'),
     url(r'^getlists/$', GetLists, name= 'getlists'),

@@ -26,16 +26,10 @@ from hachoir_core.stream import InputIOStream
 from hachoir_parser import guessParser
 from hachoir_metadata import extractMetadata
 
-
-
-
 def AddPost(request):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed('Love')
-
     if request.POST:
         form_type = request.POST["form_type"]
-
+        print request.POST
         if form_type == 'image':
         	save_img_post(request)
         elif form_type == 'message':
@@ -43,28 +37,26 @@ def AddPost(request):
         else:
             save_audio_post(request)
               
-
     return HttpResponse('200')
 
 def Home(request):
-    return render_to_response('publication/home.html')
-
+    return render_to_response('publication/home.html',  context_instance=RequestContext(request))
 
 def JsonMessages(request):
-    texts = TextPost.objects.all().order_by('-created')
-    json_list = serializers.serialize('json', texts)
-    print json_list
-    returndata = json.dumps(json_list)
+    messages = TextPost.objects.all().order_by('-created')
+    json_list = serializers.serialize('json', messages)
+    response = HttpResponse(json_list, mimetype='application/json')
+    return response
 
+def JsonImages(request):
+    images = ImagePost.objects.all().order_by('-created')
+    json_list = serializers.serialize('json', images)
     response = HttpResponse(json_list, mimetype='application/json')
     return response
 
 def JsonTracks(request): 
     tracks = Track.objects.all().order_by('-created')
     json_list = serializers.serialize('json', tracks)
-    print json_list
-    returndata = json.dumps(json_list)
-
     response = HttpResponse(json_list, mimetype='application/json')
     return response
 
@@ -223,7 +215,7 @@ def save_img_post(request):
     """
     form = ImageForm(request.POST, request.FILES)
     if form.is_valid():
-        newdoc = ImagePost(imgfile = request.FILES["docfile"], body = request.POST['body'])
+        newdoc = ImagePost(imgfile = request.FILES["docfile"])
         newdoc.save()
     else:
         print form.errors

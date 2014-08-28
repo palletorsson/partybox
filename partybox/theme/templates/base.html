@@ -18,12 +18,14 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="/static/js/angular.js"></script>
+    <script src="/static/js/controller.js"></script>
+
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/soundmanager2-jsmin.js"></script>
-    <script src="/static/js/controller.js"></script>
-    <script type="text/javascript" src="/static/js/index-rollup.js"></script>
-    <script type="text/javascript" src="/static/js/partybox.js"></script>
+
+    <script src="/static/js/index-rollup.js"></script>
+    <script src="/static/js/partybox.js"></script>
 
     <!--[if lte IE 8]>
     <style>
@@ -42,6 +44,7 @@
     <style>
         body {
             background-color:  #FAFAFA;
+			padding:0;
         }
         .post {
         background-color: white;
@@ -83,7 +86,7 @@
             border: 1px solid #cdbfe3;
         }
         .text_fill {
-            width: 100%;
+            width: 98%;
             min-height: 10px;
             padding: 10px 0 0;
             color:#666;
@@ -156,55 +159,67 @@
 		    background-color:#FFF;
 
        }
+	  .fixed_radio
+		{
+    position: relative;
+    top: 20px;
+	}
+
+@media (max-width: 767px) {
+  .fixed_radio
+		{
+    position: relative;
+
+	}
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
     </style>
 
 </head>
 <body data-spy="scroll" data-target=".bs-docs-sidebar">
-
-{% verbatim %}
-
 <div class="main" ng-controller = "MyController">
-    <ul>
-      <li class="tracks" ng-repeat="item in tracks">
- {{item.title}} {{item.pk}}  {{item.author}}  {{item.filename}} 
-        </li>
-    </ul>
-  </div>
-
-
-{% endverbatim %}
 {%block allcontent%}
-
-
-</div>
-
-
 <!-- Columns are always 50% wide, on mobile and desktop -->
-<div class="back">
-	<div class="margin-left margin-right row">
-	  
-	  <div class="col-md-3">
-		<hr />
+<div class="margin-left margin-right row">
+  
+  	<div class="col-md-3">
 		{% block posts %}
 
 		{% endblock %}
-		</div>
-		 <div class="col-md-3">
-		<hr />
-		{% block audio %}
- 			<<div>
-                   <span class="glyphicon glyphicon-volume-up"></span> |
-               </div>
+  	</div>
+	<div class="col-md-3">
+		{% block images %}	 			
 		{% endblock %}
-		 </div>
-		 <div class="col-md-3">
-		<hr />
-		{% block radio %}
 
+	 </div>
+	 <div class="col-md-3">
+		{% block audio %}
 		{% endblock %}
-		 </div>
-	</div>
+	  </div>
+	 <div class="col-md-3">
+		{% block radio %}
+		{% endblock %}
+	  </div>
 </div>
+
 
 {%endblock%}
 
@@ -276,6 +291,6 @@
   </div>
 </div>
 
-
+	</div> 
 </body>
 </html>

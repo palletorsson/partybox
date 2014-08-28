@@ -3,75 +3,99 @@
 {% load fb_versions %}
 
 {% block posts %}
-<div class="main" ng-controller = "MyController">
-	<h4>    
-		<span data-toggle="modal" data-target="#messageModal">
-			<span class="glyphicon glyphicon-pencil"></span>
-			Messages | <a>Compose ...</a> 
-		</span>  
-	</h4>
-	<div class="text_stream">
-		<div class="messages" ng-repeat="item in messages">
+<span>
+	<form enctype="multipart/form-data" class="post" method="post">
+		{% csrf_token %}
+ 		<div class="form-group">
+            <input type="text" class="form-control"  id="id_body" name="body" placeholder="Message">
+			<input type="hidden" value="message" class="form-control" id="id_form_type" name="form_type" rows="3">
+      	</div>   
+         <div class="pull-right"> <span class="glyphicon glyphicon-pencil"></span><button type="submit" class="btn btn-primary">Send</button></div>
+	</form> 
+</span>  
+<div class="text_stream">
+	<div class="messages" ng-repeat="item in messages">
+		{% verbatim %}
+	    <div class="media post text_fill">
+	        <span class="glyphicon glyphicon-pencil"></span> - {{item.fields.body}}  
+			<span class="small pull-right message_date">| {{item.fields.created}} </span>   
+        </div>	 
+		{% endverbatim %}
+	</div>
+</div>	
+{%endblock%}
+
+	
+{% block images %}
+<form  enctype="multipart/form-data" class="post" method="post">
+	{% csrf_token %}
+	<div class="form-group">
+ 		<input id="id_docfile" name="docfile" type="file" class="form-control">
+		<input type="hidden" value="image" class="form-control" id="id_form_type" name="form_type">
+	</div>
+    <div class="pull-right"> <span class="glyphicon glyphicon-picture"> </span> <input type="submit" class="btn btn-primary" value="Share"> </div>
+</form>
+	<div class="stream"></div>
+	<div class="image_stream">
+		<div class="images" ng-repeat="item in images">
 			{% verbatim %}
-		    <div class="media post text_fill">
-		        <span class="glyphicon glyphicon-pencil"></span> - {{item.fields.body}}  
-				<span class="small pull-right message_date">| {{item.fields.created}} </span>   
-            </div>	 
+			<div class="media post pull-left text_fill">
+				<img class="media-object stream_image" alt="image" src="/media/{{ item.fields.imgfile }}">
+				<div class="lable pull-right">{{ item.fields.created }}</div>
+			</div>
 			{% endverbatim %}
-		</div>
-</div>
-</div>
- 		
+    	</div>
+	</div>
 {%endblock%}
 
 {% block audio %}
-	<h4>
-		<div data-toggle="modal" data-target="#audioModal"> 
-			<span class="glyphicon glyphicon-music">
-			Tracks  | <a> Upload ...</a> 
-			</span> 
-		</div>
-		<div class="track_stream">
-<div class="main" ng-controller = "MyController">
+<form  enctype="multipart/form-data" class="post" method="post">
+    {% csrf_token %}
+	<div class="form-group">
+    	<input id="id_docfile" name="trackfile" type="file" class="form-control">
+		<input type="hidden" value="track" class="form-control" id="id_form_type" name="form_type" rows="3">
+	</div>
+    <div class="pull-right"> <span class="glyphicon glyphicon-music"> </span> <input type="submit" class="btn btn-primary" value="Share"> </div>
+</form>
 
-		<div class="songs" ng-repeat="item in songs">
+
+		<div class="track_stream"></div>
+		<div class="form-group">
+    		<input ng-model="query" placeholder="Filter songs and artist">
+		</div>
+		<div class="tracks_listed">
+
+
+		<div class="songs track_clicker" ng-click='trackClicked()' ng-repeat="item in songs | filter: query ">
 			{% verbatim %}
-<div class="media post text_fill track_click" id="{{ item.fields.pk }}" ><span class="glyphicon glyphicon-music"> </span>  <span class="track_title_author"> {{ item.fields.title }} <br/> By {{ item.fields.author }}</span> <span class="small pull-right"><span class="glyphicon glyphicon-plus track_clicker icon_hover" id="{{ item.fields.pk }}" ></span>Add</span>
+
+<div class="media post text_fill  track_click"    id="{{ item.pk }}" ><span class="glyphicon glyphicon-music"> </span>  <span class="track_title_author"> {{ item.fields.title }} <br/> By {{ item.fields.author }}</span> <span class="small pull-right"><span class="glyphicon glyphicon-plus track_clicker icon_hover" id="{{ item.pk }}" ></span>Add  {{msg}}</span>
 </div> 
 			{% endverbatim %}
 		</div>
-		</div>
 </div>
+
+		
 {%endblock%}
 
 {% block radio %}
+<div class="fixed_radio">
 	<h4>
-		<div> 
+		<div class="group">
 			<span class="glyphicon glyphicon-music"> </span> 
 			Tracks | Playing from <span class="playing_type"> </span>
+			<div id="playbar" class="playing"></div> 
+			<div class="mute_song">Mute</div>
 		</div>
 	</h4>
-		<div class="main" ng-controller = "MyController">
-			<ul>
-
-			  <li class="tracks" ng-repeat="item in tracks">
+	
+			  <div class="playlist2"></div>
+			  <div class="playlist" ng-repeat="item in playlist">
 			  {% verbatim %}
-
-			  {{item.title}} {{item.pk}}  {{item.author}}  {{item.filename}} 
+<div class="media  post text_fill track_click radio_cat" id="{{ item.pk }}" ><span class="glyphicon glyphicon-music"> </span>  <span class="track_title_author"> {{ item.title }} <br/> By {{ item.author }}</span> <span class="small pull-right"> <span class="icon_hover glyphicon glyphicon-chevron-up vote_up" id="{{ item.pk }}" ></span>|<span class="icon_hover glyphicon glyphicon-chevron-up vote_down" id="{{ item.pk }}" ></span></span>
+</div> 
 				{% endverbatim %}
-
-			  </li>
-			</ul>
-		</div>
-
-	<h4> 
-		<div data-toggle="modal" data-target="#myModal">
-		Images | <a> Share ...  </a> 
-		</div> 
-	</h4>
-	<div class="stream"></div>
-	<div class="image_stream"></div>
- 
+			  </div>
+		
+ </div>
 {%endblock%}
-
-
