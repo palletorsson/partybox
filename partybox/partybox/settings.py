@@ -29,12 +29,11 @@ STATIC_URL_PLAIN = "/static/"
 SECRET_KEY = 'ddxyvd-hqr^bqs*ck87t8dq5!+jd3q@kj3acnm9kuvn+zmhan4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
 
 # Application definition
 
