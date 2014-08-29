@@ -191,6 +191,9 @@
     cursor: inherit;
     display: block;
 }
+.margin-top {
+margin-top:20px; 
+}
     </style>
 
 </head>
@@ -198,20 +201,21 @@
 <div class="main" ng-controller = "MyController">
 {%block allcontent%}
 <!-- Columns are always 50% wide, on mobile and desktop -->
-<div class="margin-left margin-right row">
+<div class="margin-left margin-right row margin-top">
   
   	<div class="col-md-3">
+
 		{% block posts %}
 
 		{% endblock %}
   	</div>
 	<div class="col-md-3">
-		{% block images %}	 			
+        {% block images %}	 			
 		{% endblock %}
 
 	 </div>
 	 <div class="col-md-3">
-		{% block audio %}
+        {% block audio %}
 		{% endblock %}
 	  </div>
 	 <div class="col-md-3">

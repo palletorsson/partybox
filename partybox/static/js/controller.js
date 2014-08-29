@@ -6,8 +6,9 @@ myApp.controller('MyController', ['$scope', '$http',  function($scope, $http)  {
     $scope.tracks = data.playlist;
   });
 
-  $http.get('/messages/').success(function(data) {
-    $scope.messages = data;
+  $http.get('/posts/').success(function(data) {
+    $scope.posts = data;
+    console.log(data)
   });
 
   $http.get('/images/').success(function(data) {

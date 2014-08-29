@@ -44,12 +44,16 @@ this.reset();
 });
 
 
-
+$('input[type=file]').bootstrapFileInput();
+$('.file-inputs').bootstrapFileInput();
 
 var sound = "on"; 
 var ready = function () {
 	console.log("ready")
 
+$( ".showform" ).click(function() {
+$( ".fileform" ).toggle();
+});
 
 	$('.mute_song').click(function(e){
 		if (sound == "on") {
