@@ -8,10 +8,12 @@
 		{% csrf_token %}
  		<div class="form-group">
             <input type="text" class="form-control"  id="id_body" name="body" placeholder="Message">
-			<input type="hidden" value="message" class="form-control" id="id_form_type" name="form_type" rows="3">
-			<div class="fileform"><span ><input id="id_docfile" name="docfile" type="file" class="form-control"  title="Add a file"></div>
-      	</div>   
-         <div> * <span class="showform glyphicon glyphicon-picture"></span> * <span class="showform glyphicon glyphicon-music"> </span> </div><div class="pull-right"> 
+		</div>   
+	<div class="fileform"><span ><input id="id_docfile" name="docfile" type="file" class="form-control"  title="Add a file"></div>
+      	        
+ <div> * <span class="showform glyphicon glyphicon-picture"></span> * <span class="showform glyphicon glyphicon-music"> </span> </div><div class="pull-right"> 
+	     <input type="hidden" value="message" class="form-control" id="id_form_type" name="form_type">
+
 		<button type="submit" class="btn btn-primary">Post</button></div>
 		
 	</form> 
