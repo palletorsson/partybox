@@ -9,16 +9,33 @@
  		<div class="form-group">
             <input type="text" class="form-control"  id="id_body" name="body" placeholder="Message">
 			<input type="hidden" value="message" class="form-control" id="id_form_type" name="form_type" rows="3">
+			<div class="fileform"><span ><input id="id_docfile" name="docfile" type="file" class="form-control"  title="Add a file"></div>
       	</div>   
-         <div class="pull-right"> <span class="glyphicon glyphicon-pencil"></span><button type="submit" class="btn btn-primary">Send</button></div>
+         <div> * <span class="showform glyphicon glyphicon-picture"></span> * <span class="showform glyphicon glyphicon-music"> </span> </div><div class="pull-right"> 
+		<button type="submit" class="btn btn-primary">Post</button></div>
+		
 	</form> 
 </span>  
 <div class="text_stream">
-	<div class="messages" ng-repeat="item in messages">
+	<div class="posts" ng-repeat="item in posts">
 		{% verbatim %}
 	    <div class="media post text_fill">
-	        <span class="glyphicon glyphicon-pencil"></span> - {{item.fields.body}}  
-			<span class="small pull-right message_date">| {{item.fields.created}} </span>   
+
+			<div ng-show="item.model == 'publication.textpost'">
+						<span class="glyphicon glyphicon-pencil"></span> - {{item.fields.body}}  
+						<span class="small pull-right message_date">| {{item.fields.created}} </span>  
+			</div>
+
+			<div ng-show="item.model == 'publication.imagepost'">
+				<div class="media post pull-left text_fill">
+					<div ng-show="item.fields.body != Null">{{item.fields.body}}</div> 
+					<img class="media-object stream_image" alt="image" src="/media/{{ item.fields.imgfile }}">
+					<div class="lable pull-right">{{ item.fields.created }}</div>
+				</div>
+			</div>
+
+
+ 
         </div>	 
 		{% endverbatim %}
 	</div>
@@ -39,6 +56,7 @@
 	<div class="image_stream">
 		<div class="images" ng-repeat="item in images">
 			{% verbatim %}
+
 			<div class="media post pull-left text_fill">
 				<img class="media-object stream_image" alt="image" src="/media/{{ item.fields.imgfile }}">
 				<div class="lable pull-right">{{ item.fields.created }}</div>
@@ -49,14 +67,6 @@
 {%endblock%}
 
 {% block audio %}
-<form  enctype="multipart/form-data" class="post" method="post">
-    {% csrf_token %}
-	<div class="form-group">
-    	<input id="id_docfile" name="trackfile" type="file" class="form-control">
-		<input type="hidden" value="track" class="form-control" id="id_form_type" name="form_type" rows="3">
-	</div>
-    <div class="pull-right"> <span class="glyphicon glyphicon-music"> </span> <input type="submit" class="btn btn-primary" value="Share"> </div>
-</form>
 
 
 		<div class="track_stream"></div>
@@ -68,8 +78,7 @@
 
 		<div class="songs track_clicker" ng-click='trackClicked()' ng-repeat="item in songs | filter: query ">
 			{% verbatim %}
-
-<div class="media post text_fill  track_click"    id="{{ item.pk }}" ><span class="glyphicon glyphicon-music"> </span>  <span class="track_title_author"> {{ item.fields.title }} <br/> By {{ item.fields.author }}</span> <span class="small pull-right"><span class="glyphicon glyphicon-plus track_clicker icon_hover" id="{{ item.pk }}" ></span>Add  {{msg}}</span>
+<div class="media post text_fill track_click"    id="{{ item.pk }}" ><span class="glyphicon glyphicon-music"> </span>  <span class="track_title_author"> {{ item.fields.title }} <br/> By {{ item.fields.author }}</span> <span class="small pull-right"><span class="glyphicon glyphicon-plus track_clicker icon_hover" id="{{ item.pk }}" ></span>Add  {{msg}}</span>
 </div> 
 			{% endverbatim %}
 		</div>
@@ -79,15 +88,14 @@
 {%endblock%}
 
 {% block radio %}
-<div class="fixed_radio">
-	<h4>
+
+
 		<div class="group">
 			<span class="glyphicon glyphicon-music"> </span> 
 			Tracks | Playing from <span class="playing_type"> </span>
 			<div id="playbar" class="playing"></div> 
 			<div class="mute_song">Mute</div>
 		</div>
-	</h4>
 	
 			  <div class="playlist2"></div>
 			  <div class="playlist" ng-repeat="item in playlist">
@@ -97,5 +105,4 @@
 				{% endverbatim %}
 			  </div>
 		
- </div>
 {%endblock%}
