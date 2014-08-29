@@ -13,6 +13,7 @@ from django.http import HttpResponseNotAllowed
 from datetime import datetime
 from django.contrib.sessions.backends.db import SessionStore
 
+
 # models for metadata extraction
 from hachoir_core.error import HachoirError
 from hachoir_core.cmd_line import unicodeFilename
@@ -42,6 +43,13 @@ def AddPost(request):
 def Home(request):
     return render_to_response('publication/home.html',  context_instance=RequestContext(request))
 
+
+def fallback(request):
+    return HttpResponseRedirect('/')
+
+def handler404(request):
+    return HttpResponseRedirect('/')
+
 def JsonMessages(request):
     messages = TextPost.objects.all().order_by('-created')
     json_list = serializers.serialize('json', messages)
@@ -59,6 +67,22 @@ def JsonTracks(request):
     json_list = serializers.serialize('json', tracks)
     response = HttpResponse(json_list, mimetype='application/json')
     return response
+
+
+def JsonPosts(request):
+    texts = TextPost.objects.all().order_by('-created')
+    images = ImagePost.objects.all().order_by('-created')
+    
+    listing = MakeStreamList(texts, images)
+
+    for k in listing:
+        k.type = k.__class__.__name__
+
+    json_list = serializers.serialize('json', listing)
+
+    response = HttpResponse(json_list, mimetype='application/json')
+    return response
+
 
 def Posts(request):
     texts = TextPost.objects.all().order_by('-created')
@@ -112,11 +136,11 @@ def Posts(request):
         }, context_instance=RequestContext(request))
 
 
-def MakeStreamList(texts, images, tracks):
-    listing = sorted(chain(texts, images, tracks))
+def MakeStreamList(texts, images):
+    listing = sorted(chain(texts, images))
 
     listing = sorted(
-        chain(texts, images, tracks),
+        chain(texts, images),
         key=lambda instance: instance.created)
 
     listing.reverse()
