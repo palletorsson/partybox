@@ -241,24 +241,30 @@ z-index: 1000;
 {%block allcontent%}
 <!-- Columns are always 50% wide, on mobile and desktop -->
 <div class="container-fluid  margin-top">
-<div class="row">
-  
-  	<div class="col-md-5">
+	<div class="row">
+	  
+	  	<div class="col-md-5">
 
-		{% block posts %}
+			{% block posts %}
 
-		{% endblock %}
+			{% endblock %}
 
-	 </div>
-	 <div class="col-md-3">
-        {% block audio %}
-		{% endblock %}
-	  </div>
-	 <div class="col-md-3">
-		{% block radio %}
-		{% endblock %}
-	  </div>
-</div>
+		 </div>
+			<div class="hidden-md hidden-lg" style="clear: both;"></div> 
+		 <div class="col-md-3">
+		    {% block audio %}
+			{% endblock %}
+		  </div>
+			<div class="hidden-md hidden-lg" style="clear: both;"></div> 
+		 <div class="col-md-3">
+			{% block radio %}
+			{% endblock %}
+		  </div>
+			<div class="hidden-md hidden-lg" style="clear: both;"></div> 
+		 <div class="col-md-1">
+
+		  </div>
+	</div>
 </div>
 
 {%endblock%}
