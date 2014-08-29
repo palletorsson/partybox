@@ -26,7 +26,7 @@
 
     <script src="/static/js/index-rollup.js"></script>
     <script src="/static/js/partybox.js"></script>
-
+    <script src="/static/js/bootstrap.file-input.js"></script>
     <!--[if lte IE 8]>
     <style>
      h2.special {
@@ -99,7 +99,7 @@
 		}
         .feedimg {
 
-			width: 155%;
+			width: 100%;
         }
 		
 		.lable {
@@ -194,6 +194,33 @@
 .margin-top {
 margin-top:20px; 
 }
+.fileform {
+display: none;
+}
+    .btn-file {
+    position: relative;
+    overflow: hidden;
+    }
+    .btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+    }
+
+.btn {
+
+    border-radius: 2px 
+}
     </style>
 
 </head>
@@ -203,14 +230,10 @@ margin-top:20px;
 <!-- Columns are always 50% wide, on mobile and desktop -->
 <div class="margin-left margin-right row margin-top">
   
-  	<div class="col-md-3">
+  	<div class="col-md-5">
 
 		{% block posts %}
 
-		{% endblock %}
-  	</div>
-	<div class="col-md-3">
-        {% block images %}	 			
 		{% endblock %}
 
 	 </div>
