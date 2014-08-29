@@ -3,13 +3,13 @@ $(function() {
 $(".post").submit(function(event){
 
 var data = new FormData(this);
- 
+console.log(this)
 event.preventDefault();
 	$.ajax({
 		type:"POST",
 		url:"/add/",
 		data: data,
-
+        
 		cache: false,
 		processData: false,
 		contentType: false,
@@ -52,6 +52,8 @@ var ready = function () {
 
 $( ".showform" ).click(function() {
 $( ".fileform" ).toggle();
+$('input[type=file]').bootstrapFileInput();
+$('.file-inputs').bootstrapFileInput();
 });
 
 	$('.mute_song').click(function(e){
@@ -91,8 +93,12 @@ soundManager.setup({
   url: '/static/swf/',
   flashVersion: 9,
   preferFlash: false, // prefer 100% HTML5 mode, where both supported
+   useFlashBlock: false,
+debugFlash: true,
+ 
   onready: function() {
-   console.log('SM2 ready!');
+ 
+  console.log('SM2 ready!');
   },
   ontimeout: function() {
     console.log('SM2 init failed!');
@@ -209,6 +215,7 @@ $.get("/getplaylist/", function(data) {
 		                	$(".playing_type").html(data.type);
     update_playlist(data); 
 	playAudio(0);
+
 });
 
 ready(); 
