@@ -44,8 +44,7 @@ this.reset();
 });
 
 
-$('input[type=file]').bootstrapFileInput();
-$('.file-inputs').bootstrapFileInput();
+
 
 var sound = "on"; 
 var ready = function () {
@@ -88,6 +87,21 @@ $( ".fileform" ).toggle();
 	 });
 }
 
+soundManager.setup({
+  url: '/static/swf/',
+  flashVersion: 9,
+  preferFlash: false, // prefer 100% HTML5 mode, where both supported
+  onready: function() {
+   console.log('SM2 ready!');
+  },
+  ontimeout: function() {
+    console.log('SM2 init failed!');
+  },
+  defaultOptions: {
+    // set global default volume for all sound objects
+    volume: 33
+  }
+});
 
 function playAudio(playlistId){
     // Default playlistId to 0 if not supplied
@@ -101,6 +115,7 @@ function playAudio(playlistId){
         }
     }
     // Standard Sound Manager play sound function...
+
     soundManager.onready(function() {
         audio.nowPlaying = soundManager.createSound({
             id: 'sk4Audio',
