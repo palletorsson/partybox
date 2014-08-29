@@ -221,6 +221,9 @@ display: none;
 
     border-radius: 2px 
 }
+.post {
+z-index: 1000; 
+}
     </style>
 
 </head>
@@ -228,7 +231,8 @@ display: none;
 <div class="main" ng-controller = "MyController">
 {%block allcontent%}
 <!-- Columns are always 50% wide, on mobile and desktop -->
-<div class="margin-left margin-right row margin-top">
+<div class="container-fluid  margin-top">
+<div class="row">
   
   	<div class="col-md-5">
 
@@ -246,7 +250,7 @@ display: none;
 		{% endblock %}
 	  </div>
 </div>
-
+</div>
 
 {%endblock%}
 
