@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from models import TextPost, ImagePost, Track
+from models import TextPost, ImagePost, Track, DocPost
 from django import forms
 
 class TextForm(forms.Form):
@@ -15,6 +15,12 @@ class ImageForm(forms.Form):
 class TrackForm(forms.Form):
     class Meta:
         model = Track
+        fields = ('docfile')
+
+
+class DocForm(forms.Form):
+    class Meta:
+        model = DocPost
         fields = ('docfile')
 
 

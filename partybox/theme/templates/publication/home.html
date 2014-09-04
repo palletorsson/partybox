@@ -3,22 +3,22 @@
 {% load fb_versions %}
 
 {% block posts %}
-<span>
-	<form enctype="multipart/form-data" class="post" method="post">
+<div class="text_fill_extra">
+	<form enctype="multipart/form-data" class="post whiteback" method="post">
 		{% csrf_token %}
- 		<div class="form-group">
+ 		<div class="form-group whiteback">
 
             <input type="text" class="form-control zform"  id="id_body" name="body" placeholder="Message">
 		</div>   
 	<div class="fileform"> <input id="id_docfile" name="file" type="file" class="form-control"  title="Add a file"></div>
-      	        
- <div> * <span class="showform glyphicon glyphicon-picture"></span> * <span class="showform glyphicon glyphicon-music"> </span> </div><div class="pull-right"> 
+      	        <hr>
+  Add: </span> <span class="showform glyphicon glyphicon-picture"> </span> <span class="showform glyphicon glyphicon-music"> </span> <span class="showform glyphicon glyphicon-file"> </span> <div class="pull-right"> 
 	     <input type="hidden" value="image" class="form-control" id="id_form_type" name="form_type">
 
 		<button type="submit" class="btn btn-primary">Post</button></div>
 		
 	</form> 
-</span>  
+</div>  
 <div class="text_stream">
 	<div class="posts" ng-repeat="item in posts">
 		{% verbatim %}
@@ -30,16 +30,25 @@
 			</div>
 
 			<div ng-show="item.model == 'publication.imagepost'">
-				<div class="media post pull-left text_fill">
-					<div ng-show="item.fields.body != Null">{{item.fields.body}}</div> 
+				<div class="media post pull-left">
 					<img class="media-object stream_image" alt="image" src="/media/{{ item.fields.imgfile }}">
+					<div ng-show="item.fields.body != Null">{{item.fields.body}}</div> 
 					<div class="lable pull-right">{{ item.fields.created }}</div>
 				</div>
 			</div>
 
+	        <div ng-show="item.model == 'publication.docpost'">
+					<span class="glyphicon glyphicon-file"></span> - <a href="/media/{{ item.fields.docfile }}">{{ item.fields.docfile }}</a> uploaded 
+			</div>
 
- 
-        </div>	 
+
+	        <div ng-show="item.model == 'publication.track'">
+				<div>
+					<span class="glyphicon glyphicon-music"></span> - {{ item.fields.title }} </a>  
+					<div class="lable pull-right"> uploaded </div> 
+				</div>
+       		</div>	 
+	</div>	
 		{% endverbatim %}
 	</div>
 </div>	
@@ -59,7 +68,6 @@
 	<div class="image_stream">
 		<div class="images" ng-repeat="item in images">
 			{% verbatim %}
-
 			<div class="media post pull-left text_fill">
 				<img class="media-object stream_image" alt="image" src="/media/{{ item.fields.imgfile }}">
 				<div class="lable pull-right">{{ item.fields.created }}</div>
@@ -70,19 +78,22 @@
 {%endblock%}
 
 {% block audio %}
-
-
-		<div class="track_stream"></div>
-		<div class="form-group">
-    		<input ng-model="query" placeholder="Filter songs and artist">
+		<div class="media post text_fill whiteback">
+			<span class="glyphicon glyphicon-music "> </span> 
+			All Tracks...		
 		</div>
+
+		<div class="media post text_fill whiteback">
+	<div class="form-group">
+		<input ng-model="query" class="form-control zform" placeholder="Filter songs and artist">
+	</div>
+	</div>
+
 		<div class="tracks_listed">
-
-
-		<div class="songs track_clicker" ng-click='trackClicked()' ng-repeat="item in songs | filter: query ">
+		<div class="songs" ng-repeat="item in songs | filter: query ">
 			{% verbatim %}
-<div class="media post text_fill track_click"    id="{{ item.pk }}" ><span class="glyphicon glyphicon-music"> </span>  <span class="track_title_author"> {{ item.fields.title }} <br/> By {{ item.fields.author }}</span> <span class="small pull-right"><span class="glyphicon glyphicon-plus track_clicker icon_hover" id="{{ item.pk }}" ></span>Add  {{msg}}</span>
-</div> 
+			<div class="media post text_fill"><span class="glyphicon glyphicon-music"> </span>   <span class="track_title_author mute_song"><a  href="/media/{{item.fields.docfile}}">  {{ item.fields.title }} ({{ item.fields.author }}) </a></span> <span class="small pull-right"><span class="glyphicon glyphicon-plus track_clicker icon_hover" ng-click='trackClicked()' id="{{ item.pk }}" ></span></span>
+			</div> 
 			{% endverbatim %}
 		</div>
 </div>
@@ -93,19 +104,42 @@
 {% block radio %}
 
 
-		<div class="group">
-			<span class="glyphicon glyphicon-music"> </span> 
-			Tracks | Playing from <span class="playing_type"> </span>
-			<div id="playbar" class="playing"></div> 
-			<div class="mute_song">Mute</div>
+		<div class="media post text_fill whiteback">
+			<span class="glyphicon glyphicon-list-alt"> </span> 
+			Playlist: Playing from common <span class="playing_type"> </span>
+		
 		</div>
-	
+	<div class="current_song post text_fill"></div>		
+
+		<div class="playcontols post text_fill">
+			<div id="playbar" class="playing pull-right abel label-info">|<</div> 
+			<span class="mute_song">
+				<span class="muteicon glyphicon glyphicon-volume-up  label label-danger"> </span>  
+			</span>
+		</div> 
+	          <div class="tracklistinsert"></div>
 			  <div class="playlist2"></div>
 			  <div class="playlist" ng-repeat="item in playlist">
 			  {% verbatim %}
-<div class="media  post text_fill track_click radio_cat" id="{{ item.pk }}" ><span class="glyphicon glyphicon-music"> </span>  <span class="track_title_author"> {{ item.title }} <br/> By {{ item.author }}</span> <span class="small pull-right"> <span class="icon_hover glyphicon glyphicon-chevron-up vote_up" id="{{ item.pk }}" ></span>|<span class="icon_hover glyphicon glyphicon-chevron-up vote_down" id="{{ item.pk }}" ></span></span>
+<div class="media  post text_fill track_click radio_cat" id="{{ item.pk }}" ><span class="glyphicon glyphicon-music"> </span>  <span class="track_title_author"> {{ item.title }} <br/> By {{ item.author }}</span> <span class="small pull-right"> <span class="icon_hover glyphicon glyphicon-chevron-up vote_up" id="{{ item.pk }}" ></span></span>
 </div> 
 				{% endverbatim %}
 			  </div>
+
 		
 {%endblock%}
+
+
+{% block textfiles %}
+		<div class="media post text_fill whiteback">
+		<span class="glyphicon glyphicon-file"> </span>
+		Files
+		</div>
+<div class="filelist" ng-repeat="item in files"> 			  
+{% verbatim %}
+<div class="media post text_fill" id="{{ item.pk }}" ><span class="glyphicon glyphicon-file"> </span> <a href="/media/{{ item.fields.docfile }}"> <span class="title"> {{ item.fields.docfile }} </span></a></span>
+</div> 
+{% endverbatim %}
+
+</div>
+{% endblock %}

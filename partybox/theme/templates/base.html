@@ -8,7 +8,6 @@
     <meta name="author" content="anon">
 
     <!-- Latest compiled and minified CSS -->
-    <link href="/static/css/index-rollup.css" type="text/css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     
 
@@ -39,21 +38,28 @@
 
 
 
+
     {% block extra_head %} {% endblock %}
 
     <title> {% block title %} {% trans "Partybox" %} {% endblock %} </title>
     <style>
+ 
+		.top {
+		width:100%;
+		height:6px; 
+     background-color: fuchsia;
+		}
         body {
-            background-color:  #FAFAFA;
+            background-color:  #D6D3C4;
 			padding:0;
         }
         .post {
-        background-color: white;
+        background-color: #F6F6F6;
         float:left;
         width:100%;
         padding:3px 5px 10px 5px;
         margin-top:4px;
-
+        border-radius: 4px;
         box-shadow: 0 0 0 1px #D1D1D1, 0 0 4px 1px #CCCCCC;
         }
         .feedimg img {
@@ -123,53 +129,67 @@
 			padding: 4px;
 			cursor:pointer;		
 		}
-		.track_click:hover
-		{ 
-			background-color:#FFF5EE;
+        .showform {
+		padding: 3px;
 		}
-		.radio_cat:first-child
-		{ 
-		 background-color:yellow;
-		}
-		.icon_hover:hover {
-		 background-color:#CCFFFF;
-		}
-		span.glyphicon {
-			font-size: 1.4em;
-		}
-        .track_title_author {
-            display: inline-block;
+
+.showform:hover
+{ 
+	background-color:#FFF5EE;
+	cursor:pointer;				
+
 }
-	input[type=text] {
-		  -webkit-appearance: none; -moz-appearance: none;
+
+.track_click:hover { 
+	background-color:#FFF5EE;
+}
+
+.radio_cat:first-child { 
+ 	background-color:#E9E581;
+}
+
+.icon_hover:hover {
+ 	background-color:#CCFFFF;
+}
+
+span.glyphicon {
+	font-size: 1.4em;
+}
+
+.track_title_author {
+	display: inline-block;
+}
+
+input[type=text] {
+  -webkit-appearance: none; -moz-appearance: none;
   display: block;
   margin: 0;
   width: 100%; height: 40px;
   line-height: 40px; font-size: 17px;
   border: 1px solid #bbb;
-	 }
+}
 
-		}
-		.playing {
-			height:20px; 
-            border-right:4px solid; 
-		    background-color:#CCFFFF;
-		}
-        .current_song {
+		
+.playing {
+	height:20px; 
+    border-right:4px solid; 
+    background-color:green;
+	z-index:2000; 
+}
+.current_song {
 
-		    background-color:#CCFFCC;
-            padding: 6px 3px 3px 3px;
-		}
-        .message_date {
-            padding: 6px 3px 3px 3px;
+    background-color:#CCFFCC;
+    padding: 6px 3px 3px 3px;
+}
+.message_date {
+    padding: 6px 3px 3px 3px;
 
-		}
-        h4 {
-		    background-color:#FFF;
+}
+h4 {
+    background-color:#FFF;
 
-       }
-	  .fixed_radio
-		{
+}
+.fixed_radio {
     position: relative;
     top: 20px;
 	}
@@ -200,17 +220,20 @@
     cursor: inherit;
     display: block;
 }
+
 .margin-top {
-margin-top:20px; 
+  	margin-top:20px; 
 }
+
 .fileform {
-display: none;
+  	display: none;
 }
-    .btn-file {
+.btn-file {
     position: relative;
     overflow: hidden;
-    }
-    .btn-file input[type=file] {
+}
+
+.btn-file input[type=file] {
     position: absolute;
     top: 0;
     right: 0;
@@ -224,23 +247,41 @@ display: none;
     background: white;
     cursor: inherit;
     display: block;
-    }
+}
 
 .btn {
+  	border-radius: 2px 
+}
 
-    border-radius: 2px 
-}
 .zform {
-z-index: 1000; 
+  	z-index: 1000; 
 }
-    </style>
+
+.playcontols {
+  	padding: 8px 2px 12px 3px;
+}
+
+.whiteback {
+  	background-color:white;
+}
+
+.text_fill_extra {
+  	border-left: 4px solid;
+  	width: 98%;
+    color: #666;
+
+
+}
+</style>
 
 </head>
 <body data-spy="scroll" data-target=".bs-docs-sidebar">
+<div class="top"></div>
 <div class="main" ng-controller = "MyController">
 {%block allcontent%}
 <!-- Columns are always 50% wide, on mobile and desktop -->
 <div class="container-fluid  margin-top">
+	
 	<div class="row">
 	  
 	  	<div class="col-md-5">
@@ -258,6 +299,9 @@ z-index: 1000;
 			<div class="hidden-md hidden-lg" style="clear: both;"></div> 
 		 <div class="col-md-3">
 			{% block radio %}
+			{% endblock %}
+			{% block textfiles %}
+            hej
 			{% endblock %}
 		  </div>
 			<div class="hidden-md hidden-lg" style="clear: both;"></div> 
