@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import  TextPost,ImagePost, Track, PlayList, TrackListed, Vote, sessionUser
+from models import  TextPost,ImagePost, Track, DocPost, PlayList, TrackListed, Vote, sessionUser, LatestSongRequest
 
 class TextPostAdmin(admin.ModelAdmin):
     list_display = ('pk', 'body', 'created', )
@@ -16,6 +16,11 @@ class TrackAdmin(admin.ModelAdmin):
 
 admin.site.register(Track, TrackAdmin)
 
+class DocPostAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'body', 'created', 'docfile',)
+
+admin.site.register(DocPost, DocPostAdmin)
+
 class PlayListAdmin(admin.ModelAdmin):
     list_display = ('pk', 'title', 'description', 'created',)
 
@@ -25,6 +30,11 @@ class TrackListedAdmin(admin.ModelAdmin):
     list_display = ('pk', 'playlist', 'track', 'position', 'added',)
 
 admin.site.register(TrackListed, TrackListedAdmin)
+
+class LatestSongRequestAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'track', 'howmanytimes', 'requesttime',)
+
+admin.site.register(LatestSongRequest, LatestSongRequestAdmin)
 
 class VoteAdmin(admin.ModelAdmin):
     list_display = ('pk', 'number_of_votes', 'session_id', 'last_time',)

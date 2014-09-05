@@ -29,7 +29,7 @@ STATIC_URL_PLAIN = "/static/"
 SECRET_KEY = 'ddxyvd-hqr^bqs*ck87t8dq5!+jd3q@kj3acnm9kuvn+zmhan4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 
@@ -85,6 +85,18 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+# sessions# Cookie name. This can be whatever you want.
+SESSION_COOKIE_NAME = 'sessionid'
+# The module to store sessions data.
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+# Age of cookie, in seconds (default: 2 weeks).
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2
+# Whether a user's session cookie expires when the Web browser is closed
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+# Whether the session cookie should be secure (https:// only).
+SESSION_COOKIE_SECURE = False
 
 
 # Static files (CSS, JavaScript, Images)

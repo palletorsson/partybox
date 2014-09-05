@@ -10,11 +10,19 @@ class TextPost(models.Model):
 
 class ImagePost(models.Model):
     body =    models.CharField(max_length=256)
-    imgfile = models.FileField("upload jpg, png", upload_to='documents/%Y/%m/%d' , blank=True, null=True)
+    imgfile = models.FileField("upload jpg, png, gif", upload_to='documents/%Y/%m/%d' , blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return u'%s' %self.body
+
+class DocPost(models.Model):
+    body =    models.CharField(max_length=256)
+    docfile = models.FileField("upload pdf, txt, rtf", upload_to='documents/%Y/%m/%d' , blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return u'%s' %self.docfile
 
 class Track(models.Model):
     title =   models.CharField(max_length=128)
@@ -29,6 +37,18 @@ class Track(models.Model):
     def __unicode__(self):
         return u'%s' %self.title
 
+
+class LatestSongRequest(models.Model): 
+    track =    			models.ForeignKey('Track')
+    requesttime =     	models.DateTimeField(auto_now=True)
+    howmanytimes = 		models.IntegerField(max_length=4, default=1)
+
+    def __unicode__(self):
+        return u'%s' %self.requesttime
+
+class SongPlaying(models.Model): 
+    track =    	  models.ForeignKey('Track')
+    created =     models.DateTimeField(auto_now_add=True)
 
 class PlayList(models.Model): 
     title =       models.CharField(max_length=128)
