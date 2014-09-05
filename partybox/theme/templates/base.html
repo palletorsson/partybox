@@ -345,19 +345,7 @@ h4 {
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form  enctype="multipart/form-data" class="post" method="post">{% csrf_token %}
-        <div class="modal-body">
-        	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <label for="id_document">Select a file: </label>
-                <input id="id_docfile" name="docfile" type="file" class="form-control">
-            <label for="id_body">Description: </label>
-                <textarea class="form-control" id="id_body" name="body" rows="3"></textarea>
-				<input type="hidden" value="image" class="form-control" id="id_form_type" name="form_type" rows="3">
-        </div>
-        <div class="modal-footer">
-            <input type="submit" class="btn btn-primary" value="Share">
-        </div>
-     </form>
+		<iframe class="iframetarget" src=""></iframe> 
     </div>
   </div>
 </div>

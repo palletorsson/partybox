@@ -36,12 +36,9 @@
 					<div class="lable pull-right">{{ item.fields.created }}</div>
 				</div>
 			</div>
-
 	        <div ng-show="item.model == 'publication.docpost'">
-					<span class="glyphicon glyphicon-file"></span> - <a href="/media/{{ item.fields.docfile }}">{{ item.fields.docfile }}</a> uploaded 
+					<span class="glyphicon glyphicon-file"></span> - <a class="iframemodal_soon" data-toggle="modal_soon" data-target="#myModal_soon" href="/media/{{ item.fields.docfile }}">{{ item.fields.docfile }}</a> uploaded 
 			</div>
-
-
 	        <div ng-show="item.model == 'publication.track'">
 				<div>
 					<span class="glyphicon glyphicon-music"></span> - {{ item.fields.title }} </a>  
