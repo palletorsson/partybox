@@ -25,13 +25,17 @@ event.preventDefault();
 				$('#messageModal').modal('hide');	
 				$('#myModal').modal('hide');
 				$('#audioModal').modal('hide');
-
+                if (data.type == "all") {
+					message_list.html('')
+				}
 				$.each(stream, function(i, obj) {
 					  console.log(obj.model)
 					if (obj.model == "publication.textpost") {
 						$("<div class='media post  pull-left  text_fill'><span class='glyphicon glyphicon-pencil'></span> - " + obj.fields['body'] + "<span class='small pull-right message_date'> | " + obj.fields['created'] + "</span></div>").prependTo(message_list);
 					} else if (obj.model == "publication.track") {
 						$('<div class="text_fill media"> <span class="glyphicon glyphicon-music"></span> <span class="track_title_author"> '+obj.fields['title']+' uploaded </div>').prependTo(message_list);
+
+
 					} else if (obj.model == "publication.imagepost") {
 						$('<div class="media post pull-left text_fill"><img class="media-object stream_image" src="/media/'+obj.fields['imgfile']+'" alt="image" class="stream_image"> <div class="lable pull-right">'+obj.fields['created']+'</div></div>').prependTo(message_list);
 					} else if(obj.model == "publication.docpost") {
