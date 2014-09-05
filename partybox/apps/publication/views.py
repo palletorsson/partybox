@@ -317,7 +317,7 @@ def GetLists(request):
 		'Message': '',  
         'type':'' 
             }
-    print request.COOKIES['sessionid']
+
     try:
         sessionid = request.COOKIES['sessionid']
     except: 
@@ -351,7 +351,7 @@ def GetLists(request):
     except: 
         texts = TextPost.objects.all().order_by('-created')[:30]
         images = ImagePost.objects.all().order_by('-created')[:10]
-        tracks = Track.objects.all().order_by('-created')[:10]
+        tracks = Track.objects.all().order_by('-created')[:20]
         files = DocPost.objects.all().order_by('-created')[:10]
         returnjson['type'] = "all"
 
