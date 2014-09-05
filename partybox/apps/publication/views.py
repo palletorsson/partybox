@@ -314,7 +314,8 @@ def fixlist(radio_list):
 def GetLists(request): 
     returnjson = {
         'stream':'', 
-		'Message': ''  
+		'Message': '',  
+        'type':'' 
             }
     print request.COOKIES['sessionid']
     try:
@@ -337,16 +338,23 @@ def GetLists(request):
     else:
         hassession = True
 
-    user, create = sessionUser.objects.get_or_create(session_id=sessionid)
-    time_threshold = user.last_time_update
-    user.save()
-            
-    print time_threshold
+    try: 
+        user, create = sessionUser.objects.get_or_create(session_id=sessionid)
+        time_threshold = user.last_time_update
+        user.save()
 
-    texts = TextPost.objects.filter(created__gte=time_threshold).order_by('-created')
-    images = ImagePost.objects.filter(created__gte=time_threshold).order_by('-created')
-    tracks = Track.objects.filter(created__gte=time_threshold).order_by('-created')
-    files = DocPost.objects.filter(created__gte=time_threshold).order_by('-created')
+        texts = TextPost.objects.filter(created__gte=time_threshold).order_by('-created')
+        images = ImagePost.objects.filter(created__gte=time_threshold).order_by('-created')
+        tracks = Track.objects.filter(created__gte=time_threshold).order_by('-created')
+        files = DocPost.objects.filter(created__gte=time_threshold).order_by('-created')
+        returnjson['type'] = "parcial"
+    except: 
+        texts = TextPost.objects.all().order_by('-created')[:30]
+        images = ImagePost.objects.all().order_by('-created')[:10]
+        tracks = Track.objects.all().order_by('-created')[:10]
+        files = DocPost.objects.all().order_by('-created')[:10]
+        returnjson['type'] = "all"
+
 
     for t in texts:
         t.created = datetime.strptime(str(t.created)[:19], "%Y-%m-%d %H:%M:%S")
