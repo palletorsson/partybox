@@ -1,0 +1,277 @@
+body {
+    background-color: #88898c;
+	padding:0;
+    color:white; 
+}
+
+.top {
+	width:100%;
+	height:18px; 
+ 	background-color: #FF6600;
+}	
+
+.steampost {
+	background-color: #2e2f33;
+	float:left;
+	width:100%;
+	padding:3px 5px 10px 5px;
+	margin-top:4px;
+	border-radius: 4px;
+	box-shadow: 0 0 0 1px #D1D1D1, 0 0 4px 1px #CCCCCC;
+}
+
+.feedimg img {
+    width: 100%;
+}
+
+.margin-left {
+	margin-left:10px;
+}
+
+.margin-right {
+	margin-right:10px;
+}
+
+.margin-top {
+	margin-top:10px;
+}
+
+.pb-icon {
+    display: block;
+    font-weight: 500;
+    background-color: #563d7c;
+    border-radius: 15%;
+    cursor: default;
+    text-align: center;
+}
+
+.pb-icon-sml {
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.pb-icon-outline {
+    background-color: transparent;
+    border: 1px solid #cdbfe3;
+}
+
+.text_fill {
+    width: 98%;
+    min-height: 10px;
+    padding: 10px 0 0;
+    color:#E8E8E8;
+    margin: 1px 10px 6px 2px;
+    padding: 6px 10px 6px 10px;
+    border-left:2px solid ;
+}
+
+.tracks_listed {
+
+    padding: 1px 4px 1px 3px;
+
+}
+.stream_image {
+	width: 70%;
+    float:left; 
+}
+
+.feedimg {
+	width: 100%;
+}
+
+.lable {
+	position: relative;
+	bottom: 40px;
+	padding-left: 40px;
+	right: 10px;
+	background-color: black;
+	filter: alpha(opacity=70);
+	-moz-opacity: 0.8;
+	-khtml-opacity: 0.8;
+	opacity: 0.8;
+	padding: 4px;
+}
+
+.track_click {
+	background-color: white;
+	border-bottom:1px solid ;
+	border-left:2px solid ;
+	padding: 4px;
+	cursor:pointer;		
+}
+
+.showform {
+	padding: 3px;
+}
+
+.showform:hover
+{ 
+	background-color:#FFF5EE;
+	cursor:pointer;				
+
+}
+
+.track_click:hover { 
+	background-color:#FFF5EE;
+}
+
+.radio_cat:first-child { 
+ 	background-color:#E9E581;
+}
+
+.icon_hover:hover {
+ 	background-color:#CCFFFF;
+}
+
+span.glyphicon {
+	font-size: 1.4em;
+}
+
+.track_title_author {
+	display: inline-block;
+}
+
+input[type=text] {
+	-webkit-appearance: none; -moz-appearance: none;
+	display: block;
+	margin: 0;
+	width: 100%; height: 40px;
+	line-height: 40px; font-size: 17px;
+	border: 1px solid #bbb;
+}
+		
+.playing {
+	height:20px; 
+    border-right:4px solid; 
+    background-color:green;
+	z-index:2000; 
+}
+.track_fill {
+   background-color: #2e2f33;
+   border-bottom: 1px solid #bbb;
+   padding: 2px 2px 2px 2px;
+
+    color: #666;
+}
+
+.current_song {
+    background-color:#CCFFCC;
+    padding: 6px 3px 3px 3px;
+	border-radius: 4px;
+}
+
+.message_date {
+    padding: 6px 3px 3px 3px;
+}
+
+h4 {
+    background-color:#FFF;
+}
+
+.fixed_radio {
+    position: relative;
+    top: 20px;
+}
+
+@media (max-width: 767px) {
+  .fixed_radio {
+    position: relative;
+	}
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.margin-top {
+  	margin-top:20px; 
+}
+
+.fileform {
+  	display: none;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.btn {
+  	border-radius: 2px 
+}
+
+.zform {
+  	z-index: 1000; 
+}
+
+.playcontols {
+  	padding: 8px 2px 12px 3px;
+}
+
+.whiteback {
+  	background-color:white;
+}
+
+.text_fill_extra {
+  	border-left: 4px solid;
+  	width: 98%;
+    color: #666;
+}
+
+.show_on_track_load {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.navbar{
+    min-height: 35px; 
+}
+
+.backgroundimage {
+	width:100%
+}
+
+.logoimage {
+	width:24px; 
+    margin-top:-8px; 
+}
+
+.background_stream {
+    background-color: #FFF;
+}
+.fullmodal {
+width:100%; 
+}

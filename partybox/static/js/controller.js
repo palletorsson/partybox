@@ -29,6 +29,15 @@ myApp.controller('MyController', ['$scope', '$http',  function($scope, $http)  {
   	});
   }
 
+  $scope.iframeimage= function(e, i) {
+    var target = $('.iframetarget'); 
+    console.log(e.target)
+    var value = e.target.src
+	target.attr('src', value );	
+  }
+
+
+
 
   $scope.getLastData = function() {
 	$http.get('/getplaylist/').success(function(data) {
@@ -39,7 +48,7 @@ myApp.controller('MyController', ['$scope', '$http',  function($scope, $http)  {
 					type = data.type,
 		        	track_html = '';
 				$.each(trackslist, function(i, track) {
-					track_html = track_html  + ("<div class='media post text_fill track_click radio_cat' id='" + track.pk + "'> <span class='glyphicon glyphicon-music'></span>"+ track['title']  + " ( "+ track.author+ " )"+"<span class='small pull-right'> <span class='icon_hover glyphicon glyphicon-chevron-up vote_up' id='"+track['pk']+"'> </span> </span></div>");  
+					track_html = track_html  + ("<div class='track_click track_fill' id='" + track.pk + "'> <span class='glyphicon glyphicon-music'></span>"+ track['title']  + " ( "+ track.author+ " )"+"<span class='small pull-right'> <span class='icon_hover glyphicon glyphicon-chevron-up vote_up' id='"+track['pk']+"'> </span> </span></div>");  
 			   });
 				$playlist.html('');
 	            $playlist2.html('');
@@ -49,6 +58,8 @@ myApp.controller('MyController', ['$scope', '$http',  function($scope, $http)  {
   				$scope.votes(); 
 	});
   }
+
+
 
   $scope.votes = function() {
 	

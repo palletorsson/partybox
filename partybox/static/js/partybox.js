@@ -5,7 +5,6 @@ $(".post").submit(function(event){
 var data = new FormData(this);
 if (data.body != '') {
 
-
 event.preventDefault();
 	$.ajax({
 		type:"POST",
@@ -47,8 +46,6 @@ event.preventDefault();
 			}); 
 		}	
 
-
-
 	});
 	$('.file-input-name').html('')
 	this.reset();
@@ -56,9 +53,8 @@ event.preventDefault();
 });
 
 
-
-
 var sound = "on"; 
+
 var ready = function () {
 
 $('input[type=file]').bootstrapFileInput();
@@ -66,14 +62,13 @@ $('.file-inputs').bootstrapFileInput();
 
 
 $( ".showform" ).click(function() {
-$( ".fileform" ).toggle();
+	$( ".fileform" ).toggle();
 });
 
-
-$('.iframemodal').click(function(e){
-    var url = $('.iframemodeal').attr('src')	  
-	$('.iframetarget').attr('src', url)	 
+$().click(function(e){
+    console.log(e)
 });
+
 
 $('.mute_song').click(function(e){
     console.log("maju")
@@ -214,16 +209,10 @@ function playAudio(playlistId, start_at){
 
         })
     });
+
 }
 
-var set_total_width = true; 
-var audio = [];
-
-// Array of files you'd like played
-var request_start = true
-
-if (request_start) {
-	$.get("/getplaylist/", function(data) {
+$.get("/getplaylist/", function(data) {
 		audio.playlist = ["media/"+data.current_track];
 		$(".current_song").html("<span class='glyphicon glyphicon-music'></span> Current track: "+data.playlist[0]['title'] )
 				            	$(".playing_type").html(data.type);
@@ -233,10 +222,11 @@ if (request_start) {
 		playAudio(0, start_at);
         var request_start = false
 	});
-}
+
+var set_total_width = true; 
+var audio = [];
 
 ready(); 
-
 
 var update_playlist = function (data) {
 		var playlist_el = $(".tracklistinsert");
@@ -249,11 +239,15 @@ var update_playlist = function (data) {
 		playlist_el.html('')
 		$.each(list, function(i, track) {
         if (i > 1) {
-		playlist_el.append("<div class='media post text_fill track_click radio_cat' id='" + track['pk'] + "'> <span class='glyphicon glyphicon-music'></span> "+ track['title']  + " ( "+ track['author']+ " )"+"<span class='small pull-right'> <span class='icon_hover glyphicon glyphicon-chevron-up vote_up' id='"+track['pk']+"'> </span> </span>");  
+		playlist_el.append("<div class='track_click track_fill' id='" + track['pk'] + "'> <span class='glyphicon glyphicon-music'></span> "+ track['title']  + " ( "+ track['author']+ " )"+"<span class='small pull-right'> <span class='icon_hover glyphicon glyphicon-chevron-up vote_up' id='"+track['pk']+"'> </span> </span>");  
 }
 	   });
 	}
     return "ok"; 
 });
 
+
+
+
+var request_start = true
 
