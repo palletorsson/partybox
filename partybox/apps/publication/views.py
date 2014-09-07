@@ -291,7 +291,10 @@ def fixlist(radio_list):
     print "eee",  len(radio_list) 
     for t in radio_list: 
         t.track.title = t.track.title[:20]
-        t.track.author = t.track.author[:20] 
+        if t.track.author == 'unspecified': 
+            pass
+        else:  
+            t.track.author = t.track.author[:20] 
 
     radio_list_as_list = []
            
@@ -303,7 +306,7 @@ def fixlist(radio_list):
     for track in radio_list:
         temp = {"title":track.track.title, "file":str(track.track.docfile), "track_pk":track.track.pk, "pk":track.pk, "author":track.track.author }
         radio_list_as_list.append(temp)
-
+    print current_track_in_list.track.docfile
     returnjson['current_track'] = str(current_track_in_list.track.docfile)
     returnjson['current'] = current_pk
     returnjson['playlist'] = radio_list_as_list  
@@ -510,7 +513,8 @@ def AddTrackToPlayList(request, track_id):
             pass
     else:
         count = len(p) + 1
-        TrackListed.objects.create(playlist=pl, track=track1, position=count)
+        track = TrackListed(playlist=pl, track=track1, position=count)
+        track.save()		
 
     p, created = Vote.objects.get_or_create(session_id=sessionid)
 
