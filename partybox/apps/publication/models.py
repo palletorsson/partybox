@@ -46,6 +46,10 @@ class LatestSongRequest(models.Model):
     def __unicode__(self):
         return u'%s' %self.requesttime
 
+    class Meta:
+        ordering = ['-requesttime']
+
+
 class SongPlaying(models.Model): 
     track =    	  models.ForeignKey('Track')
     created =     models.DateTimeField(auto_now_add=True)

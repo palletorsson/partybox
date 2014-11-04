@@ -1,85 +1,182 @@
 var myApp = angular.module('myApp', []); 
 
-myApp.controller('MyController', ['$scope', '$http',  function($scope, $http)  {
+myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($scope, $http, fileUpload)  {
 
+  // 1 Interact with django API
+  // get last function posts
+  $scope.getLastStream = function() {
+	  $http.get('/posts/').success(function(data) {
+		$scope.posts = data;
+			angular.forEach($scope.posts ,function(value, index){
+				if (value.model == 'publication.docpost') {
+					var splited = value.fields.docfile.split( '/' );
+					value.title = splited[4];
+				}
+			})
+	  });
+  }
+  
+  $scope.getLastStream(); 
+
+  // get the playlist form tracks 	
   $http.get('/getplaylist/').success(function(data) {
-    $scope.tracks = data.playlist;
+    $scope.tracks = data.playlist; 
+    $scope.lasttrack = data.current_all; 
+    console.log(data) 
+      
   });
 
-  $http.get('/posts/').success(function(data) {
-    $scope.posts = data;
+  // get track list
+  $http.get('/tracks/').success(function(data) {
+    $scope.songs = data;  
   });
-
+  
+  // get file list
   $http.get('/files/').success(function(data) {
     $scope.files = data;
-  });
+    angular.forEach($scope.files ,function(value, index){
+			var splited = value.fields.docfile.split( '/' );
+			value.title = splited[4];
+		})
 
+  });
+  
+  // get image list 
   $http.get('/images/').success(function(data) {
     $scope.images = data;
   });
 
-  $http.get('/tracks/').success(function(data) {
-    $scope.songs = data;  
-  });
 
-
-  $scope.trackClicked = function() {
-  	$http.get('/list/'+this.item.pk+'/').success(function(data_1) {
-	  $scope.getLastData()
-  	});
+  // 2 Dom functions
+  // toggle fileform
+  $scope.toggleFileField = function() {
+	  $( ".fileform" ).toggle();
   }
 
+  // iframe for images	  	
   $scope.iframeimage= function(e, i) {
     var target = $('.iframetarget'); 
     console.log(e.target)
     var value = e.target.src
-	target.attr('src', value );	
+	target.attr('src', value);	
   }
 
+  // add track to playlist suggestions 
+  $scope.trackClicked = function() {
+	$http.get('/list/'+this.item.pk+'/').success(function(data_1) {
+	  $scope.getLastPlaylist()
+  	});
+  }
 
-
-
-  $scope.getLastData = function() {
-	$http.get('/getplaylist/').success(function(data) {
-		var $playlist = $(".playlist");
-        var $playlist2 = $(".playlist2");
-		var playlist_el = $(".tracklistinsert");
-	    var trackslist = data.playlist,
-					type = data.type,
-		        	track_html = '';
-				$.each(trackslist, function(i, track) {
-					track_html = track_html  + ("<div class='track_click track_fill' id='" + track.pk + "'> <span class='glyphicon glyphicon-music'></span>"+ track['title']  + " ( "+ track.author+ " )"+"<span class='small pull-right'> <span class='icon_hover glyphicon glyphicon-chevron-up vote_up' id='"+track['pk']+"'> </span> </span></div>");  
-			   });
-				$playlist.html('');
-	            $playlist2.html('');
-	            playlist_el.html('');
-
-				$playlist2.html(track_html);
-  				$scope.votes(); 
+  // after adding to playlist suggestions update tracks
+  $scope.getLastPlaylist = function() {
+	$http.get('/getplaylist/')
+		.success(function(data) {
+		 $scope.tracks = data.playlist;
 	});
   }
 
-
-
-  $scope.votes = function() {
-	
-	$('.vote_down').click(function(e){
-		var id = this.id;
-		$.get("/votetrackdown/"+id+'', function(response) {
-		 $scope.getLastData();
-  	}); 
-
-	 });
-
-	 $('.vote_up').click(function(e){
-		var id = this.id;
-		$.get("/votetrackup/"+id+'', function(response) {
-		     $scope.getLastData();
+  // vote for track in playlist suggestions 
+  $scope.voteUpClicked = function(id) {
+	    // disable voting for 3 sec. 
+	    var stop_voting = $(".voting")
+	    console.log(stop_voting)
+	    stop_voting.attr('disabled','disabled');
+	    setTimeout(function() {
+			 stop_voting.removeAttr('disabled');
+		}, 30000);
+	    
+		$http.get("/votetrackup/"+id)
+			.success(function(data) {
+				$scope.getLastPlaylist();
   		}); 
+  }
+  // file upload och form submit
+  $scope.uploadFile = function(body){
+	var file = $scope.myFile;
+	var csrfmiddlewaretoken = $("[name='csrfmiddlewaretoken']").val();
 
- });
+	console.log('file is ' + JSON.stringify(file), body, csrfmiddlewaretoken);  
+		  
+	if (JSON.stringify(file) == undefined)  {
+		file = '';
+		var has_file = false;
+	} else {
+		var has_file = true;
+	} 
+	
+	if (body == undefined)  {
+		body = ''
+		var has_body = false;
+	} else {
+		var has_body = true;	
+	}
+		
+	var uploadUrl = "/add/";
+	// only upload or submit if form has content
+	
+	if (has_body || has_file) {
+		fileUpload.uploadFileToUrl(file, body, csrfmiddlewaretoken, uploadUrl);	
+		
+	}	
+	$('#id_body').val(''); 
+	// this is the wrong way to do this but I havent figured out how the service can know about the scope
+	setTimeout(function() {
+		$scope.getLastStream(); 
+	}, 1000);
 
-  	}
+  };
 
+
+// Function to replicate setInterval using $timeout service.
+  $scope.intervalFunction = function(){
+    setTimeout(function() {
+      console.log("get data ... ")
+      $scope.getLastStream(); 
+      $scope.getLastPlaylist();
+      $scope.intervalFunction(); 
+    }, 20000)
+  };
+
+  // Kick off the interval
+  $scope.intervalFunction();
 
 }]);
+
+myApp.directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+            
+            element.bind('change', function(){
+		         scope.$apply(function(){
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]);
+
+myApp.service('fileUpload', ['$http', function ($http) {
+    this.uploadFileToUrl = function(file, body, csrfmiddlewaretoken, uploadUrl){
+        var fd = new FormData();
+        
+        fd.append('body', body);
+		fd.append('file', file);        
+        fd.append('csrfmiddlewaretoken', csrfmiddlewaretoken);
+
+        $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .success(function(){
+			
+        })
+        .error(function(){
+        });
+    }
+}]);
+
+

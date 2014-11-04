@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/static/css/partybox.css">
  
     <!-- Latest compiled and minified JavaScript -->
+   
     <script src="/static/js/angular.js"></script>
     <script src="/static/js/controller.js"></script>
 
@@ -24,9 +25,13 @@
     <script src="/static/js/soundmanager2-jsmin.js"></script>
 
     <script src="/static/js/index-rollup.js"></script>
-    <script src="/static/js/partybox.js"></script>
+
     <script src="/static/js/bootstrap.file-input.js"></script>
- 
+ {% if user.is_authenticated %}
+        <script src="/static/js/partybox.js"></script>
+       {%else%}
+          <script src="/static/js/no_sound.js"></script>
+    {%endif%}
     <!--[if lte IE 8]>
     <style>
      h2.special {
@@ -52,7 +57,7 @@
       <div class="container-fluid"  >
 	<div class="nav">
 
-		<a href="#home" class="btn btn-link">Home</a>
+		<a href="#home" class="btn btn-link">Hosme</a>
 		<a href="#tracks" class="btn btn-link">Tracks</a>
 		<a href="#files" class="btn btn-link">Files</a>
 
@@ -66,9 +71,9 @@
 <!-- Columns are always 50% wide, on mobile and desktop -->
 <div class="container-fluid  margin-top">
 	
-	<div class="row" >
 
-	  	<div class="col-md-5">
+
+	  	<div class="col-md-4">
 
 			{% block posts %}
 
@@ -76,12 +81,12 @@
 
 		 </div>
 			<div class="hidden-md hidden-lg" style="clear: both;" id="tracks"></div> 
-		 <div class="col-md-3" >
+		 <div class="col-md-4" >
 		    {% block audio %}
 			{% endblock %}
 		  </div>
 			<div class="hidden-md hidden-lg" style="clear: both;"></div> 
-		 <div class="col-md-3">
+		 <div class="col-md-4">
 			{% block radio %}
 			{% endblock %}
          <div id="files">
