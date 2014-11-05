@@ -29,6 +29,8 @@ from hachoir_parser import guessParser
 from hachoir_metadata import extractMetadata
 import time
 
+playmode = 'A' 
+
 def AddPost(request):
     if request.POST:
         fileExtension = None
@@ -39,8 +41,7 @@ def AddPost(request):
                 pass
 	
         millis = int(round(time.time() * 1000))
-
-       
+     
         if fileExtension == '.jpg' or fileExtension == '.png' or fileExtension == '.gif' or fileExtension == '.jpeg' :
         	save_img_post(request)
         elif fileExtension == '.mp3':
@@ -51,13 +52,12 @@ def AddPost(request):
             save_message_post(request)
             print "message"
         else:
-            print "postnon"
+            print "post is none"
  
     return HttpResponse('200')
 
 def Home(request):
     return render_to_response('publication/home.html',  context_instance=RequestContext(request))
-
 
 def fallback(request):
     return HttpResponseRedirect('/')
@@ -79,6 +79,10 @@ def JsonImages(request):
 
 def JsonTracks(request): 
     tracks = Track.objects.all().order_by('-created')
+    radio_list = getlastplaylist()
+    l3 = [x for x in tracks if x not in radio_list]
+    print l3
+    zx = 0; 
     for t in tracks: 
         if len(t.title) > 20:
             t.title = t.title[:20] + ".."
@@ -86,6 +90,7 @@ def JsonTracks(request):
             t.author = t.author[:20] 
         if len(t.author) + len(t.author) > 39:
              t.author = t.author[:14] 
+      
 
     json_list = serializers.serialize('json', tracks)
     response = HttpResponse(json_list, mimetype='application/json')
@@ -103,8 +108,8 @@ def JsonPosts(request):
             t.author = t.author[:20] 
         if len(t.author) + len(t.author) > 39:
              t.author = t.author[:14] 
-    files = DocPost.objects.all().order_by('-created')[:10]
-
+             
+    files = DocPost.objects.all().order_by('-created')[:10] 
     images = ImagePost.objects.all().order_by('-created')[:10]
 
     listing = MakeStreamList(texts, images, tracks, files)
@@ -119,10 +124,13 @@ def JsonPosts(request):
     return response
 
 def JsonFiles(request):
-    files = DocPost.objects.all().order_by('-created')
-    for f in files:
-        print f.docfile
-    json_list = serializers.serialize('json', files)
+    doc_files = DocPost.objects.all().order_by('-created')
+
+    for doc_file in doc_files:
+		doc_file.file_name = str(doc_file).rsplit('/',1)[1]
+		doc_file.katten = "hsh"
+      
+    json_list = serializers.serialize('json', doc_files)
     response = HttpResponse(json_list, mimetype='application/json')
     return response
 
@@ -165,7 +173,11 @@ def Posts(request):
   	        'radio': radio_list
         }, context_instance=RequestContext(request))
 
-
+def RemoveItemSuggested(track_list, suggest_list): 
+    for tracks in track_list:
+        if track in suggest_list:
+            track.pop
+        
 def MakeStreamList(texts, images, tracks, files):
     listing = sorted(chain(texts, images, tracks, files))
 
@@ -179,71 +191,95 @@ def MakeStreamList(texts, images, tracks, files):
 def songPlayingNow(request):
     returnjson = {
         'playhead':'', 
-		'song': 'Something'  
+		'song': ''  
             }
     timenow = round(time.time())
     returnjson['playhead'] = timenow
-    # get the time from the timestap of lastsongplayed
-
+    
     returndata = json.dumps(returnjson)
     response = HttpResponse(returndata, mimetype='application/json')
     return response
 
 def GetPlaylist(request): 
-    # look for tracks in playlist 
-    radio_list = getlastplaylist()
-   
-    if len(radio_list) < 5: 
-        addsongtoplaylist()
-
-    radio_list = getlastplaylist()
-
-    print "----------------- radio list ->", radio_list
-
-
+    # get last play list and assign current track
+    radio_list = getlastplaylist()	
+    
+	# there should always be tracks in the playlist
+    if len(radio_list) < 4: 
+        AddRandomSongToPlaylist()
+        # and get the new list 
+        radio_list = getlastplaylist()
+    
+    # build a jsonlist to return
     returnjson = fixlist(radio_list)
-    current_track = radio_list[0].track
-    current_track_in_list = radio_list[0]
-
-    millis = int(round(time.time()*1000))
-
-    try:
-        lastsongrequested = LatestSongRequest.objects.get(track = current_track, pk = 1)
-    except LatestSongRequest.DoesNotExist:   
-        lastsongrequested = LatestSongRequest(track = current_track, pk = 1)
-        lastsongrequested.save()
-        lastsongrequested = LatestSongRequest.objects.get(track = current_track, pk = 1)
-
-    hours = int(lastsongrequested.track.duration[0])
-    minutes = int(lastsongrequested.track.duration[2:4])
-    seconds = int(lastsongrequested.track.duration[5:6])
-    songduration_milli = (minutes*60 + seconds) * 1000
-
-    if (lastsongrequested.track.pk == current_track_in_list.track.pk):
-        epochtime = epoch(lastsongrequested.requesttime)
-
-        lengthofplaying = int(millis - epochtime)
-        print lengthofplaying, songduration_milli 
-        if lengthofplaying > songduration_milli: 
-            removelastsong()
-            radio_list = getlastplaylist() 
-            returnjson = fixlist(radio_list)
-            returnjson['start_playing_at'] = 20000
-            # change 
-            #lastsongrequested = LatestSongRequest(track = current_track, pk = 1)
-            #lastsongrequested.save()
- 
-        else: 
-            returnjson['start_playing_at'] = lengthofplaying
-
-    else: 
-        returnjson['start_playing_at'] = 1
-
+    
+    # return the playlist 
     returndata = json.dumps(returnjson)
     response = HttpResponse(returndata, mimetype='application/json')
     return response
 
-def addsongtoplaylist(): 
+def RemoveTrackForPlaylist(request):
+    # get playlist       
+    radio_list = getlastplaylist()
+
+    # get first track        
+    current_track = radio_list[0].track
+    # is track old remove it from playlist, returns True or False 
+    track_done = IsTrackDone(request, current_track)
+    if track_done == True:
+        removeLastTrackFromPlaylist()
+        
+    returndata = json.dumps({"trackremoved":track_done})
+    response = HttpResponse(returndata, mimetype='application/json')
+    return response
+    
+# url /removetrack/ used by music player   
+def removeLastTrackFromPlaylist(request):   
+    radio_list = getlastplaylist()
+    track_remove_from_radio_list = radio_list[0]
+    
+    if track_remove_from_radio_list:   
+        init_track = LatestSongRequest(track=track_remove_from_radio_list.track)
+        print "init",  init_track
+        init_track.save()
+        track_remove_from_radio_list.delete()
+        
+    returndata = json.dumps({"trackremoved":init_track.track.title})
+    response = HttpResponse(returndata, mimetype='application/json')
+    return response
+    
+def IsTrackDone(request, current_track): 
+    # set track done to false
+    track_is_done = False
+
+	# get current time in milli seconds
+    millis = int(round(time.time()*1000))
+    
+    # get or set timing track
+    lastsongrequested = LatestSongRequest.objects.order_by('requesttime')[0]
+    print lastsongrequested
+
+    # check to see if the time past is greater then the length of the track   
+    epochtime = epoch(lastsongrequested.requesttime)
+    lengthofplaying = int(millis - epochtime)
+    
+    # convert time to milli seconds
+    hours = int(lastsongrequested.track.duration[0])
+    minutes = int(lastsongrequested.track.duration[2:4])
+    seconds = int(lastsongrequested.track.duration[5:6])
+    songduration_milli = (minutes*60 + seconds) * 1000
+    
+    # if the length of playing is greater remove the song from playlist if you are logged in
+    if lengthofplaying > songduration_milli: 	        
+        if playmode == 'A':
+            if request.user.is_authenticated(): 
+	            track_is_done = True
+        else: 			
+            track_is_done = True
+                
+    return track_is_done
+     
+def AddRandomSongToPlaylist(): 
     track = Track.objects.order_by('?')[0]
     current = track
     try:   
@@ -257,14 +293,9 @@ def addsongtoplaylist():
         random_track.save()
     except: 
         pass
-
-    return 1
+    return True
      
-def removelastsong():    
-    del_radio_list = getfirstsongofplaylist()
-    del_radio_list.delete()
-    print del_radio_list
-    return 1
+
 
 def getlastplaylist():
     try:
@@ -273,8 +304,12 @@ def getlastplaylist():
 		radio_list = []
     return radio_list
 
-def getfirstsongofplaylist(): 
-    obj = PlayList.objects.get(pk=1).tracklisted_set.all()[0]
+def GetFirstSongofPlaylist(): 
+    try:  
+        obj = PlayList.objects.get(pk=1).tracklisted_set.all().order_by('-position')[0]
+        print "to del: ", obj
+    except PlayList.DoesNotExist:
+        obj = False     
     return obj
 
 def fixlist(radio_list): 
@@ -283,12 +318,13 @@ def fixlist(radio_list):
 		'playlist': '',
         'current_track': '',  
         'current': '',
+        'current_all': '',
         'start_playing_at':'', 
         'pk':'',
             }
 
     returnjson['type'] = "List"
-    print "eee",  len(radio_list) 
+ 
     for t in radio_list: 
         t.track.title = t.track.title[:20]
         if t.track.author == 'unspecified': 
@@ -304,9 +340,13 @@ def fixlist(radio_list):
     item = 1
 
     for track in radio_list:
-        temp = {"title":track.track.title, "file":str(track.track.docfile), "track_pk":track.track.pk, "pk":track.pk, "author":track.track.author }
+        temp = {"title":track.track.title, "file":str(track.track.docfile), "track_pk":track.track.pk, "pk":track.pk, "author":track.track.author, "position":track.position}
         radio_list_as_list.append(temp)
-    print current_track_in_list.track.docfile
+	
+	current = LatestSongRequest.objects.all()
+	print "mjau", current[0].track.title
+    returnjson['current_all'] = {"title":current[0].track.title, "file":str(current[0].track.docfile), "track_pk":current[0].track.pk, "pk":current[0].pk, "author":current[0].track.author}
+    
     returnjson['current_track'] = str(current_track_in_list.track.docfile)
     returnjson['current'] = current_pk
     returnjson['playlist'] = radio_list_as_list  
@@ -416,6 +456,7 @@ def save_doc_post(request):
     form = DocForm(request.POST, request.FILES)
     if form.is_valid():
         newdoc = DocPost(docfile = request.FILES["file"])
+        
         newdoc.save()
     else:
         print form.errors
@@ -465,10 +506,8 @@ def save_audio_post(request):
  
     else:
         print form.errors
-
-def AddTrackToPlayList(request, track_id):
-    if request.method == 'GET':
-        print track_id
+        
+def HandelSession(request):
     try:
         sessionid = request.COOKIES['sessionid']
     except:
@@ -480,57 +519,68 @@ def AddTrackToPlayList(request, track_id):
         sessionid = s.session_key
         print sessionid
 
-    pl = PlayList.objects.get(pk=1)
+# get requested track by id
+def GetTrackById(track_id): 
     try:
-        track1 = Track.objects.get(pk=track_id)
+        track = Track.objects.get(pk=track_id)
     except Track.DoesNotExist:
-        raise Http404	
+        raise Http404
+    return track
 
-    tracklist = pl.tracklisted_set.all()
+# get current playlist  
+def GetCurrentPlaylist(): 
+	playlist = PlayList.objects.get(pk=1)
+	return playlist
 
-    for t in tracklist:
-        print t.pk, track1.pk
-        if t.pk == track1.pk: 
-            in_list = True
-        else: 
-            in_list = False
-	
-    p = TrackListed.objects.filter(track=track1)
 
-    if in_list == False:
-        try:
-    	    track_listed = TrackListed(playlist=pl, track=track1, position = 1)
-            print track_listed
-        except TrackListed.DoesNotExist:
-            pass
+# Add track to playlist if it is not already in the playlist        
+def AddTrackToPlayList(request, track_id):
+    if request.method == 'GET':
+        print "track_id: ", track_id
+        
+    #HandelSession(request)
 
-    if in_list == True:
-        try: 
-    	    track_listed = TrackListed.objects.get(playlist=pl, track=track1)
-            track_listed.position = track_listed.position + 1
-            track_listed.save()	
-        except:
-            pass
+    # get requested track by id
+    track_requested = GetTrackById(track_id)
+       
+    # get current playlist   
+    tracklist = GetCurrentPlaylist() 
+
+    # get current playlist set 
+    tracklist_set = tracklist.tracklisted_set.all()
+
+    # check if the requested track is in tracklist
+
+    #is_track_listed = IsTrackRequstedInList(track_requested, tracklist_set)
+    #print " -------------------  ", is_track_listed 
+	# if track is not it tracklist add the track 
+    add_track = AddRequestedTrackToPlayList(track_requested, tracklist)
+    if add_track:
+        print "katten"
     else:
-        count = len(p) + 1
-        track = TrackListed(playlist=pl, track=track1, position=count)
-        track.save()		
-
-    p, created = Vote.objects.get_or_create(session_id=sessionid)
-
-    if created: 
-        p.number_of_votes = 1
-        p.save()
-    else: 
-        if p.number_of_votes < 100: 
-            p.number_of_votes = p.number_of_votes+1
-            p.save()
-        else:
-            now_more_voting = True
-
+        VoteTrackUp(request, track_id)
 
     return HttpResponse(track_id)
 
+# check if the requested track is in tracklist
+def IsTrackRequstedInList(track_requested, tracklist): 
+    in_list = False
+    for t in tracklist:
+        if t.pk == track_requested.pk:
+            in_list = True
+    return in_list 
+
+# if track is not it tracklist add the track 			
+def AddRequestedTrackToPlayList(track_requested, tracklist):
+    try:
+        new_track_to_list = TrackListed(playlist=tracklist, track=track_requested, position = 1)
+        new_track_to_list.save()
+        track_add = True
+    except:
+        track_add = False
+        
+    return track_add
+    
 def RemoveTrackFromPlaylist(request, track_id):
 
     pl = PlayList.objects.get(pk=1)
@@ -547,28 +597,24 @@ def RemoveTrackFromPlaylist(request, track_id):
     return HttpResponse(track_id)
 
 def VoteTrackUp(request, track_id): 
-    try:
-        track1 = Track.objects.get(pk=track_id)
-    except Track.DoesNotExist:
-        raise Http404	
+    # get requested track by id
+    track_requested = GetTrackById(track_id)
 
-    pl = PlayList.objects.get(pk=1)
+    # get current playlist   
+    tracklist = GetCurrentPlaylist() 
+    print "tracklist", tracklist, track_requested.pk
+    
+    # get the track as track in tracklist
+    
+    # get current playlist set 
+    
+    the_track_voted_for = TrackListed.objects.get(playlist=tracklist, track=track_requested) 
 
-    try:
-    	track_listed = TrackListed.objects.get(playlist=pl, track=track1)
-    except TrackListed.DoesNotExist:
-       track_listed = None
-
-    if track_listed:
-        track_listed.position = track_listed.position - 1
-        track_listed.save()
-    try:
-    	track_listed = TrackListed.objects.all()
-    except TrackListed.DoesNotExist:
-       track_listed = None
- 
-    return HttpResponse(track_listed)
-
+    if the_track_voted_for:
+        the_track_voted_for.position = the_track_voted_for.position + 1
+        the_track_voted_for.save()
+  
+    return HttpResponse(the_track_voted_for)
 
 def VoteTrackDown(request, track_id): 
     try:

@@ -1,7 +1,7 @@
 from django.conf.urls import *
 
 from django.views.generic.base import RedirectView
-from apps.publication.views import Posts, AddPost, AddTrackToPlayList, GetLists, GetPlaylist, RemoveTrackFromPlaylist, Home, VoteTrackUp, VoteTrackDown, JsonMessages, JsonImages, JsonTracks, fallback, JsonPosts, JsonFiles, songPlayingNow
+from apps.publication.views import Posts, AddPost, AddTrackToPlayList, GetLists, GetPlaylist, RemoveTrackFromPlaylist, Home, VoteTrackUp, VoteTrackDown, JsonMessages, JsonImages, JsonTracks, fallback, JsonPosts, JsonFiles, songPlayingNow, removeLastTrackFromPlaylist
 from django.contrib import admin
 
 
@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^list/(?P<track_id>[-_\w]+)/$', AddTrackToPlayList, name= 'addtrack'),
     url(r'^getlists/$', GetLists, name= 'getlists'),
     url(r'^getplaylist/$', GetPlaylist, name= 'getplaylist'),
+    url(r'^removetrack/$', removeLastTrackFromPlaylist, name='removeLastTrackFromPlaylist'),
     url(r'^removetrackfromplaylist/(?P<track_id>[-_\w]+)/$', RemoveTrackFromPlaylist, name= 'getplaylist'),
     url(r'^votetrackup/(?P<track_id>[-_\w]+)/$', VoteTrackUp, name= 'votetrackup'),
     url(r'^votetrackdown/(?P<track_id>[-_\w]+)/$', VoteTrackDown, name= 'votetrackdown'),
