@@ -173,7 +173,11 @@ def Posts(request):
   	        'radio': radio_list
         }, context_instance=RequestContext(request))
 
-
+def RemoveItemSuggested(track_list, suggest_list): 
+    for tracks in track_list:
+        if track in suggest_list:
+            track.pop
+        
 def MakeStreamList(texts, images, tracks, files):
     listing = sorted(chain(texts, images, tracks, files))
 
@@ -526,21 +530,8 @@ def GetTrackById(track_id):
 # get current playlist  
 def GetCurrentPlaylist(): 
 	playlist = PlayList.objects.get(pk=1)
-
 	return playlist
 
-# check if the requested track is in tracklist
-def IsTrackRequstedInList(track_requested, tracklist): 
-    in_list = False
-    for t in tracklist:
-        if t.pk == track_requested.pk:
-            in_list = True
-    return in_list 
-
-# if track is not it tracklist add the track 			
-def AddRequestedTrackToPlayList(track_requested, tracklist):
-    new_track_to_list = TrackListed(playlist=tracklist, track=track_requested, position = 1)
-    new_track_to_list.save()
 
 # Add track to playlist if it is not already in the playlist        
 def AddTrackToPlayList(request, track_id):
@@ -559,16 +550,37 @@ def AddTrackToPlayList(request, track_id):
     tracklist_set = tracklist.tracklisted_set.all()
 
     # check if the requested track is in tracklist
-    is_track_listed = IsTrackRequstedInList(track_requested, tracklist_set)
-    print " -------------------  ", is_track_listed 
+
+    #is_track_listed = IsTrackRequstedInList(track_requested, tracklist_set)
+    #print " -------------------  ", is_track_listed 
 	# if track is not it tracklist add the track 
-    if is_track_listed:
-        print "track already in list"
+    add_track = AddRequestedTrackToPlayList(track_requested, tracklist)
+    if add_track:
+        print "katten"
     else:
-        AddRequestedTrackToPlayList(track_requested, tracklist)
+        VoteTrackUp(request, track_id)
 
     return HttpResponse(track_id)
 
+# check if the requested track is in tracklist
+def IsTrackRequstedInList(track_requested, tracklist): 
+    in_list = False
+    for t in tracklist:
+        if t.pk == track_requested.pk:
+            in_list = True
+    return in_list 
+
+# if track is not it tracklist add the track 			
+def AddRequestedTrackToPlayList(track_requested, tracklist):
+    try:
+        new_track_to_list = TrackListed(playlist=tracklist, track=track_requested, position = 1)
+        new_track_to_list.save()
+        track_add = True
+    except:
+        track_add = False
+        
+    return track_add
+    
 def RemoveTrackFromPlaylist(request, track_id):
 
     pl = PlayList.objects.get(pk=1)
@@ -595,6 +607,7 @@ def VoteTrackUp(request, track_id):
     # get the track as track in tracklist
     
     # get current playlist set 
+    
     the_track_voted_for = TrackListed.objects.get(playlist=tracklist, track=track_requested) 
 
     if the_track_voted_for:

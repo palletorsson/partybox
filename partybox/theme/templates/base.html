@@ -27,7 +27,7 @@
     <script src="/static/js/index-rollup.js"></script>
 
     <script src="/static/js/bootstrap.file-input.js"></script>
- {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
         <script src="/static/js/partybox.js"></script>
        {%else%}
           <script src="/static/js/no_sound.js"></script>
@@ -51,6 +51,7 @@
 
 </head>
 <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
 <hr>
 <div id="home"></div>
 <nav role="navigation" class="visible-xs navbar navbar-default navbar-fixed-top">
@@ -72,6 +73,7 @@
 <div class="container-fluid  margin-top">
 	
 
+			<div class="hidden-md hidden-lg" style="clear: both;"></div> 
 
 	  	<div class="col-md-4">
 
@@ -106,7 +108,7 @@
 {%endblock%}
      <div class="nav">
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="about">About</a></li>
+        <li><a class="small">About</a></li>
       </ul>
   </div><!-- /.container-fluid -->
 </nav>

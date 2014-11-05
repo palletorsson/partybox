@@ -52,6 +52,9 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
   $scope.toggleFileField = function() {
 	  $( ".fileform" ).toggle();
   }
+  $scope.showAll = function() {
+	  console.log("fuck");
+  }
 
   // iframe for images	  	
   $scope.iframeimage= function(e, i) {

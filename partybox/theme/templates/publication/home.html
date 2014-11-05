@@ -5,7 +5,7 @@
 {% block posts %}
 
 <div class="media media steampost text_fill">
-  <form enctype="multipart/form-data" >
+  <form enctype="multipart/form-data"  name="myForm">
     {% csrf_token %}
 
     <span ng-click="toggleFileField()">
@@ -21,7 +21,9 @@
     </div>
 	 <hr>
 	  <div class="form-group">
-		<input  class="form-control zform" ng-model="post.body"  id="id_body" name="body" placeholder="What on your mind?">
+		<input  class="form-control zform" ng-model="post.body"  id="id_body" name="body" placeholder="What on your mind?" ng-maxlength="512">
+		   <span class="error label label-danger"  ng-show="myForm.body.$error.maxlength">Your post can not be longer then 512 characters</span><br>
+       
 	  </div> 
 	   <hr>
 	  <div class="pull-right">
@@ -32,14 +34,33 @@
 </div> <!-- end of steampost head -->
 
 <div class="text_stream">
+	<div class="media steampost text_fill" >
+		<img class="logoimage" src="/media/nocloud_2.png"> DataParty |  
+		<a><span ng-mouseenter="showAbout=true" ng-mouseleave="showAbout=false">About</span></a> |
+		<a><span ng-mouseenter="showInstructions=true" ng-mouseleave="showInstructions=false"> Instructions </span> </a>
+	</div>
+	<div class="media steampost text_fill small" ng-show="showAbout">
+		DataParty provides an easy way to communicate, exchange files and listen to music together for groups of people that share the same physical space.
+		Projects like PirateBox and DataParty provides an alternative to cloud services. 
+		These projects can be seen as activist or artistic initiatives directed away from increased 
+		surveillance that occurs with mass centralization of digital communication services. 
+	</div>
+		<div class="media steampost text_fill small" ng-show="showInstructions">
+			DataParty is easy as one, two, three.
+			<ol>
+				<li>Join the DataParty wireless network</li>
+				<li>Open a web browser on your device</li>
+				<li>Share and Party like it 1984</li>
+			</ol>
+	</div>
   <div class="posts" ng-repeat="item in posts">
     {% verbatim %}
-    <div class="media steampost text_fill">
+    <div class="media steampost text_fill"  >
 		<div ng-show="item.model == 'publication.textpost'"> <div class="pull-right">
         <span class="glyphicon glyphicon-pencil"></span> 
          </div>
 			<span class="small message_date">| {{item.fields.created}} </span>
-      <div>         - {{item.fields.body}}
+      <div>         - {{item.fields.body }}
 	</div>
 
       </div>
@@ -103,6 +124,7 @@
 
 {% block audio %}
 	<div class="media steampost text_fill">
+		
 		<span class="glyphicon glyphicon-music"> </span>
 		Suggest songs
 		<div>
@@ -117,10 +139,11 @@
 				<div class="track_fill">
 					<span class="glyphicon glyphicon-music"> </span>
 						<span>
-							<a href="/media/{{item.fields.docfile}}">  {{ item.fields.title }} ({{ item.fields.author }}) </a>
 							</span> <span class="small pull-right">
-							<button class="btn btn-xs" ng-click='trackClicked()' id="{{ item.pk }}"> Suggest </button>
-						</span>
+								<button class="btn btn-xs" ng-click='trackClicked()' id="{{ item.pk }}"> Suggest </button>
+							</span>
+							<a href="/media/{{item.fields.docfile}}">  {{ item.fields.title }} ({{ item.fields.author }}) </a>
+							
 					</span>
 				</div>
 				{% endverbatim %}
