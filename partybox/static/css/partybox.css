@@ -176,8 +176,12 @@ input[type=text] {
     font-size:11px; 
 }
 
-
-
+@media (max-width: 768px) {
+	.container-fluid, .col-md-4{
+		padding-right: 0px;
+		padding-left: 0px;
+	}
+}
 .fixed_radio {
     position: relative;
     top: 20px;
