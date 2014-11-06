@@ -22,8 +22,6 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
   $http.get('/getplaylist/').success(function(data) {
     $scope.tracks = data.playlist; 
     $scope.lasttrack = data.current_all; 
-    console.log(data) 
-      
   });
 
   // get track list
@@ -64,6 +62,7 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
 	target.attr('src', value);	
   }
 
+  // 3 playlist functions
   // add track to playlist suggestions 
   $scope.trackClicked = function() {
 	$http.get('/list/'+this.item.pk+'/').success(function(data_1) {
@@ -94,6 +93,7 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
 				$scope.getLastPlaylist();
   		}); 
   }
+  // 4 fileupload
   // file upload och form submit
   $scope.uploadFile = function(body){
 	var file = $scope.myFile;
@@ -129,14 +129,15 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
 	}, 1000);
 
   };
-// uplaod file from refresh
+  // 5 refresh dom
+  // upload file from refresh
   $scope.updateDom = function(){
     setTimeout(function() {
-		//$scope.pageRefresh();
+		$scope.pageRefresh();
     }, 7000)
    };
 
-// Function to replicate setInterval using $timeout service.
+  // Function to replicate setInterval using $timeout service.
   $scope.intervalFunction = function(){
     setTimeout(function() {
 		$scope.pageRefresh();
@@ -149,10 +150,11 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
       $scope.intervalFunction(); 
   };
   // Kick off the interval
-  // $scope.intervalFunction();
+  $scope.intervalFunction();
 
 }]);
 
+// fileupload directive
 myApp.directive('fileModel', ['$parse', function ($parse) {
     return {
         restrict: 'A',
@@ -169,6 +171,7 @@ myApp.directive('fileModel', ['$parse', function ($parse) {
     };
 }]);
 
+//fileupload service
 myApp.service('fileUpload', ['$http', function ($http) {
     this.uploadFileToUrl = function(file, body, csrfmiddlewaretoken, uploadUrl){
         var fd = new FormData();
