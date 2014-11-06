@@ -143,8 +143,10 @@
 
 	<div class="media steampost text_fill">
 		
+	<h4>	
 		<span class="glyphicon glyphicon-music"> </span>
 		Suggest songs
+	</h4>
 		<div>
 			<hr>
 			<div class="form-group">
@@ -155,17 +157,20 @@
 			<div class="playlist tracks_listed" ng-repeat="item in songs | filter: query ">
 				{% verbatim %}
 				<div class="track_fill">
-					<span class="glyphicon glyphicon-music"> </span>
+						
+						<a href="/media/{{item.fields.docfile}}"> <span class="glyphicon glyphicon-play"></span></a>
 						<span>
 							</span> <span class="small pull-right">
-								<button class="btn btn-xs" ng-click='trackClicked()' id="{{ item.pk }}"> Suggest </button>
+							
+								<button class="btn btn-xs" ng-click='trackClicked()' id="{{ item.pk }}"> <span class="glyphicon glyphicon-plus"></span> </button>
 							</span>
-							<a href="/media/{{item.fields.docfile}}">  {{ item.fields.title }} ({{ item.fields.author }}) </a>
+							 <span class="small">{{ item.fields.title }} ({{ item.fields.author }}) </span>
 							
 					</span>
 				</div>
 				{% endverbatim %}
 			</div>
+			
 		</div>
 	<hr>
 	</div>
@@ -178,7 +183,7 @@
 
 {% block radio %}
 	<div class="media steampost text_fill">		
-			<h4><img src='/media/dj.jpg' width="40"/> Dj Random Now Playing<span class="playing_type"> </span></h4>  <hr>		
+			<h4><img src='/media/dj_32.jpg' /> Dj Random Now Playing <span class="playing_type"> </span></h4>  <hr>		
 			<div class="current_song_box">
 				<img class="record" src='/media/80_album.png' width="80"/>
 				<span class="current_song">{% verbatim %}  {{ lasttrack.title }} by {{ lasttrack.author }} --  {% endverbatim %}</span>
@@ -193,15 +198,13 @@
 		<hr>
 		  {%endif%}
 			<div class="tracks_listed"> <span class="glyphicon glyphicon-tasks"></span> Pending Suggestions</div>
-	
-	          <div class="tracklistinsert tracks_listed "></div>
-			  <div class="playlist2 tracks_listed"></div>
+
 			  <div class="playlist tracks_listed suggested" ng-repeat="item in tracks">
 
 			  {% verbatim %}
 				<div class="track_fill" id="{{ item.pk }}" >
 					<span class="glyphicon glyphicon-music"> </span> 
-					<a href="/media/{{item.file}}">  <span class="track_title_author"> {{ item.title }} by {{ item.author }} </span> </a>
+					<a href="/media/{{item.file}}" class="not_playing">  <span class="track_title_author"> {{ item.title }} by {{ item.author }} </span> </a>
 					<span class="small pull-right"> 
 						 <span class="vote_num_green"> {{ item.position }} </span> <button class="btn btn-xs voting" 
 						ng-click="voteUpClicked(item.track_pk)" data="{{ item.track_pk }}" id="{{ item.track_pk }}" ><span class="glyphicon glyphicon-thumbs-up"> </span> </button>
