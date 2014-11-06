@@ -75,15 +75,25 @@
 			<div class="hidden-md hidden-lg" style="clear: both;" id="tracks"></div> 
 		 <div class="col-md-4" >
 		    {% block audio %}
+
 			{% endblock %}
 		  </div>
 			<div class="hidden-md hidden-lg" style="clear: both;"></div> 
 		 <div class="col-md-4">
 			{% block radio %}
+
 			{% endblock %}
+			
+			{% if user.is_authenticated %}
+			         <div id="instructions">
+				{% block instructions %}
+				{% endblock %}
+					</div>
+            {%endif%}
+            
          <div id="files">
 			{% block textfiles %}
-            hej
+  
 			{% endblock %}
 		</div>
 
@@ -96,12 +106,7 @@
 </div>
 
 {%endblock%}
-     <div class="nav">
-      <ul class="nav navbar-nav navbar-right">
-        <li><a class="small">About</a></li>
-      </ul>
-  </div><!-- /.container-fluid -->
-</nav>
+
 
 
 
@@ -124,10 +129,6 @@
   </div>
 </div>
   
-
-
-
-
-	</div> 
+</div> 
 </body>
 </html>
