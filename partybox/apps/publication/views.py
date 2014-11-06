@@ -44,7 +44,7 @@ def AddPost(request):
      
         if fileExtension == '.jpg' or fileExtension == '.png' or fileExtension == '.gif' or fileExtension == '.jpeg' :
         	save_img_post(request)
-        elif fileExtension == '.mp3':
+        elif fileExtension == '.mp3' or fileExtension == '.MP3':
         	save_audio_post(request)
         elif fileExtension == '.pdf' or fileExtension == '.txt'  or fileExtension == '.rtf':
         	save_doc_post(request)
