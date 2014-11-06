@@ -155,7 +155,11 @@ input[type=text] {
    background-color: #2e2f33;
    border-bottom: 1px solid #bbb;
    padding: 2px 2px 2px 2px;
-   color: #666;
+   color: lightgrey;
+}
+
+h4 {
+	font-size:20px;
 }
 
 .current_song_box {
