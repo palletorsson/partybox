@@ -132,7 +132,7 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
 // uplaod file from refresh
   $scope.updateDom = function(){
     setTimeout(function() {
-		$scope.pageRefresh();
+		//$scope.pageRefresh();
     }, 7000)
    };
 
@@ -149,7 +149,7 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
       $scope.intervalFunction(); 
   };
   // Kick off the interval
-  //$scope.intervalFunction();
+  // $scope.intervalFunction();
 
 }]);
 
