@@ -1,5 +1,6 @@
 $(function() {
-
+	
+// 1 soundmanager 
 soundManager.setup({
   url: '/static/swf/',
   flashVersion: 9,
@@ -95,5 +96,27 @@ setTimeout(function() {
 var set_total_width = true; 
 var audio = [];
 
+// 2 file upload
+	$(".filepost").submit(function(event){
+
+	var data = new FormData(this);
+	
+		event.preventDefault();
+			$.ajax({
+				type:"POST",
+				url:"/add/",
+				data: data,      
+				cache: false,
+				processData: false,
+				contentType: false,
+				success: function(data) {
+				   console.log(data);
+				}	
+			});
+
+		$('.file-input-name').html('')
+		this.reset();
+			
+	});
 });
 

@@ -3,41 +3,10 @@
 {% load fb_versions %}
 
 {% block posts %}
-
-<div class="media media steampost text_fill">
-  <form enctype="multipart/form-data"  name="myForm">
-    {% csrf_token %}
-
-    <span ng-click="toggleFileField()">
-		<span class="showform glyphicon glyphicon-picture"> </span>
-		<span class="showform glyphicon glyphicon-music"> </span>
-		<span class="showform glyphicon glyphicon-file"> </span>
-		<span class="showform"> Click here to share images, mp3s and pdfs. </span>
-    </span>
-   
- <br>
-    <div class="fileform">
-      <input id="id_docfile"  name="file" type="file" file-model="myFile" class="btn btn-primary btn-xs form-control upload_form"  title="Select file"> 
-    </div>
-	 <hr>
-	  <div class="form-group">
-		<input  class="form-control zform" ng-model="post.body"  id="id_body" name="body" placeholder="What on your mind?" ng-maxlength="512">
-		   <span class="error label label-danger"  ng-show="myForm.body.$error.maxlength">Your post can not be longer then 512 characters</span><br>
-       
-	  </div> 
-	   <hr>
-	  <div class="pull-right">
-		
-		<button type="submit" ng-click="uploadFile(post.body)" class="btn btn-primary btn-xs">Post</button>
-	  </div>
-   </form>
-</div> <!-- end of steampost head -->
-
-<div class="text_stream">
-	<div class="media steampost text_fill" >
+<div class="media steampost text_fill" >
 		<img class="logoimage" src="/media/nocloud_2.png"> DataParty |  
-		<a><span ng-mouseenter="showAbout=true" ng-mouseleave="showAbout=false">About</span></a> |
-		<a><span ng-mouseenter="showInstructions=true" ng-mouseleave="showInstructions=false"> Instructions </span> </a>
+		<a><span ng-mousedown="showAbout=true" ng-mouseleave="showAbout=false">About</span></a> |
+		<a><span ng-mousedown="showInstructions=true" ng-mouseleave="showInstructions=false"> Instructions </span> </a>
 	</div>
 	<div class="media steampost text_fill small" ng-show="showAbout">
 		DataParty provides an easy way to communicate, exchange files and listen to music together for groups of people that share the same physical space.
@@ -53,6 +22,52 @@
 				<li>Share and Party like it 1984</li>
 			</ol>
 	</div>
+	
+<div class="media media steampost text_fill read_alert ">
+	
+  <form enctype="multipart/form-data" class="filepost" method="post">
+    {% csrf_token %}
+
+    <span ng-click="toggleFileField()">
+		<span class="showform glyphicon glyphicon-picture"> </span>
+		<span class="showform glyphicon glyphicon-music"> </span>
+		<span class="showform glyphicon glyphicon-file"> </span>
+		<span class="showform"> Click here to share images, mp3s and pdfs. </span>
+    </span>
+   
+  <br>
+    <div class="fileform">
+		<hr>
+      <input id="id_docfile" name="file" type="file" class="upload_form"  title="Select file"> 
+      
+      	<input type="hidden" id="id_body" name="body" value="">	   
+      <hr>	
+      <button type="submit" class="btn btn-primary pull-right" ng-click="updateDom()">Share</button>
+      	
+    </div>
+
+	 
+ </form>
+ </div>
+<div class="media media steampost text_fill">
+		 <hr>
+  <form enctype="multipart/form-data"  name="myForm">
+    {% csrf_token %}
+	  <div class="form-group">
+		<input  class="form-control zform" ng-model="post.body"  id="id_body" name="body" placeholder="What on your mind?" ng-maxlength="512">
+		   <span class="error label label-danger"  ng-show="myForm.body.$error.maxlength">Your post can not be longer then 512 characters</span><br>
+       
+	  </div> 
+	   <hr>
+	  <div class="pull-right">
+		
+		<button type="submit" ng-click="uploadFile(post.body)" class="btn btn-primary">Post</button>
+	  </div>
+   </form>
+</div> <!-- end of steampost head -->
+
+<div class="text_stream">
+	
   <div class="posts" ng-repeat="item in posts">
     {% verbatim %}
     <div class="media steampost text_fill"  >
@@ -123,6 +138,7 @@
 {%endblock%}
 
 {% block audio %}
+
 	<div class="media steampost text_fill">
 		
 		<span class="glyphicon glyphicon-music"> </span>
@@ -159,12 +175,10 @@
 {%endblock%}
 
 {% block radio %}
-
-
-		<div class="media steampost text_fill">		
+	<div class="media steampost text_fill">		
 			<h4><img src='/media/dj.jpg' width="40"/> Dj Random Now Playing<span class="playing_type"> </span></h4>  <hr>		
 			<div class="current_song_box">
-				<img src='/media/80_album.png' width="80"/>
+				<img class="record" src='/media/80_album.png' width="80"/>
 				<span class="current_song">{% verbatim %}  {{ lasttrack.title }} by {{ lasttrack.author }} --  {% endverbatim %}</span>
 			</div>
 		{% if user.is_authenticated %}
@@ -196,6 +210,8 @@
 
 		<hr>
 		</div>
+	
+
 {%endblock%}
 
 

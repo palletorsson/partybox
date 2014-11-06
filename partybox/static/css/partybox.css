@@ -155,19 +155,25 @@ input[type=text] {
    background-color: #2e2f33;
    border-bottom: 1px solid #bbb;
    padding: 2px 2px 2px 2px;
-
-    color: #666;
+   color: #666;
 }
 
 .current_song_box {
     background: none repeat scroll 0 0 #f5f5f5;
-
     margin-bottom: 15px;
     padding: 10px;
+    height: 100px; 
+}
+
+.record {
+	float: left;
 }
 
 .current_song {
     color: black;
+    overflow:auto; 
+    padding-left: 10px; 
+    display: block; 
 }
 
 .message_date {
@@ -176,8 +182,12 @@ input[type=text] {
     font-size:11px; 
 }
 
-
-
+@media (max-width: 768px) {
+	.container-fluid, .col-md-4{
+		padding-right: 0px;
+		padding-left: 0px;
+	}
+}
 .fixed_radio {
     position: relative;
     top: 20px;
@@ -265,6 +275,9 @@ input[type=text] {
   	border-left: 4px solid;
   	width: 98%;
     color: #666;
+}
+.read_alert {
+    border-color: #ff0000;
 }
 
 .show_on_track_load {
