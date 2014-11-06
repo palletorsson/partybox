@@ -4,7 +4,7 @@
 
 {% block posts %}
 <div class="media steampost text_fill" >
-		<img class="logoimage" src="/media/nocloud_2.png"> DataParty |  
+		<img class="logoimage" src="/media/nocloud_48.png"> DataParty |  
 		<a><span ng-mousedown="showAbout=true" ng-mouseleave="showAbout=false">About</span></a> |
 		<a><span ng-mousedown="showInstructions=true" ng-mouseleave="showInstructions=false"> Instructions </span> </a>
 	</div>
@@ -17,9 +17,9 @@
 		<div class="media steampost text_fill small" ng-show="showInstructions">
 			DataParty is easy as one, two, three.
 			<ol>
-				<li>Join the DataParty wireless network</li>
-				<li>Open a web browser on your device</li>
-				<li>Share and Party like it 1984</li>
+				<li>Join the "partyBox" wireless network</li>
+				<li>Open a web browser and goto http://dataparty.lan</li>
+				<li>Share and party like it 1984</li>
 			</ol>
 	</div>
 	
@@ -29,9 +29,7 @@
     {% csrf_token %}
 
     <span ng-click="toggleFileField()">
-		<span class="showform glyphicon glyphicon-picture"> </span>
-		<span class="showform glyphicon glyphicon-music"> </span>
-		<span class="showform glyphicon glyphicon-file"> </span>
+		<span class="glyphicon glyphicon-transfer"></span>
 		<span class="showform"> Click here to share images, mp3s and pdfs. </span>
     </span>
    
@@ -58,7 +56,7 @@
   <form enctype="multipart/form-data"  name="myForm">
     {% csrf_token %}
 	  <div class="form-group">
-		<input  class="form-control zform" ng-model="post.body"  id="id_body" name="body" placeholder="What on your mind?" ng-maxlength="512">
+		<input  class="form-control zform" ng-model="post.body"  id="id_body" name="body" placeholder="Whats on your mind?" ng-maxlength="512">
 		   <span class="error label label-danger"  ng-show="myForm.body.$error.maxlength">Your post can not be longer then 512 characters</span><br>
        
 	  </div> 
@@ -186,7 +184,7 @@
 				<span class="current_song">{% verbatim %}  {{ lasttrack.title }} by {{ lasttrack.author }} --  {% endverbatim %}</span>
 			</div>
 		{% if user.is_authenticated %}
-		    <div class="playcontols current_song_box">
+		    <div class="playcontols current_song_boxs">
 				<div id="playbar" class="playing pull-right abel label-info">|<</div>
 				<span class="mute_song">
 					<span class="muteicon glyphicon icon-thumbs-up label label-danger"> </span>
@@ -194,7 +192,7 @@
 			</div>
 		<hr>
 		  {%endif%}
-			<div class="tracks_listed">Pending Suggestions</div>
+			<div class="tracks_listed"> <span class="glyphicon glyphicon-tasks"></span> Pending Suggestions</div>
 	
 	          <div class="tracklistinsert tracks_listed "></div>
 			  <div class="playlist2 tracks_listed"></div>
@@ -218,6 +216,23 @@
 
 {%endblock%}
 
+{% block instructions %}
+<div class="media steampost text_fill" >
+	<img class="logoimage" src="/media/nocloud_48.png">
+		DataParty Instructions
+	<hr>
+	<div>
+		<div class="small">
+			DataParty  is easy as one, two, three.
+			<ol>
+				<li>Join the "partyBox" wireless network</li>
+				<li>Open a web browser and goto http://dataparty.lan</li>
+				<li>Share and party like it 1984</li>
+			</ol>
+		</div>
+	</div>
+</div>
+{% endblock %}
 
 {% block textfiles %}
 	<div class="media steampost text_fill">
@@ -235,9 +250,7 @@
 		{% endverbatim %}
 		</div>
 		<hr>
-		{% if user.is_authenticated %}
-			<img class="logoimage" src="/media/nocloud_2.png"> admin
-			<hr>
-		{%endif%}
 	</div>
 {% endblock %}
+
+
