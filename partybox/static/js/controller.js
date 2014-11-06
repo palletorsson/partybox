@@ -129,18 +129,25 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
 	}, 1000);
 
   };
-
+// uplaod file from refresh
+  $scope.updateDom = function(){
+    setTimeout(function() {
+		$scope.pageRefresh();
+    }, 7000)
+   };
 
 // Function to replicate setInterval using $timeout service.
   $scope.intervalFunction = function(){
     setTimeout(function() {
-      console.log("get data ... ")
+		$scope.pageRefresh();
+    }, 20000)
+  };
+  
+  $scope.pageRefresh = function(){
       $scope.getLastStream(); 
       $scope.getLastPlaylist();
       $scope.intervalFunction(); 
-    }, 20000)
   };
-
   // Kick off the interval
   $scope.intervalFunction();
 
