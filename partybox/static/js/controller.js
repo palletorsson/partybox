@@ -149,6 +149,7 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
       $scope.getLastPlaylist();
       $scope.intervalFunction(); 
   };
+  
   // Kick off the interval
   $scope.intervalFunction();
 
