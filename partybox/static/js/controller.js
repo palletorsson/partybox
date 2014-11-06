@@ -149,7 +149,7 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
       $scope.intervalFunction(); 
   };
   // Kick off the interval
-  $scope.intervalFunction();
+  //$scope.intervalFunction();
 
 }]);
 

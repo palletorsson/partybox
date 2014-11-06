@@ -344,7 +344,6 @@ def fixlist(radio_list):
         radio_list_as_list.append(temp)
 	
 	current = LatestSongRequest.objects.all()
-	print "mjau", current[0].track.title
     returnjson['current_all'] = {"title":current[0].track.title, "file":str(current[0].track.docfile), "track_pk":current[0].track.pk, "pk":current[0].pk, "author":current[0].track.author}
     
     returnjson['current_track'] = str(current_track_in_list.track.docfile)
@@ -377,7 +376,7 @@ def GetLists(request):
         s = SessionStore()
         s.save()
         sessionid = s.session_key
-        print sessionid
+
     else:
         hassession = True
 
@@ -517,7 +516,7 @@ def HandelSession(request):
         s = SessionStore()
         s.save()
         sessionid = s.session_key
-        print sessionid
+
 
 # get requested track by id
 def GetTrackById(track_id): 
@@ -591,7 +590,7 @@ def RemoveTrackFromPlaylist(request, track_id):
        track_listed = None
        raise Http404
 
-    print track_listed
+
     if track_listed:
         track_listed.delete()
     return HttpResponse(track_id)
@@ -602,8 +601,7 @@ def VoteTrackUp(request, track_id):
 
     # get current playlist   
     tracklist = GetCurrentPlaylist() 
-    print "tracklist", tracklist, track_requested.pk
-    
+
     # get the track as track in tracklist
     
     # get current playlist set 
