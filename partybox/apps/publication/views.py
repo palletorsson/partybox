@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -12,7 +13,10 @@ import json
 from django.http import HttpResponseNotAllowed
 from datetime import datetime, timedelta
 from django.contrib.sessions.backends.db import SessionStore
-
+#import threading
+import subprocess
+import time
+from fabric.api import local
 import os
 
 # models for metadata extraction
@@ -27,9 +31,12 @@ from hachoir_core.error import HachoirError
 from hachoir_core.stream import InputIOStream
 from hachoir_parser import guessParser
 from hachoir_metadata import extractMetadata
-import time
 
 playmode = 'A' 
+
+def CaptureAll(request):
+    return HttpResponseRedirect('/home/')
+
 
 def AddPost(request):
     if request.POST:
@@ -57,7 +64,18 @@ def AddPost(request):
     return HttpResponse('200')
 
 def Home(request):
+    Playfm()
     return render_to_response('publication/home.html',  context_instance=RequestContext(request))
+
+def StartFm(request):
+    Playfm()
+
+def Playfm():
+    last_song_pl = GetFirstSongofPlaylist() 
+    last_song_file = str(settings.PROJECT_ROOT) + "/media/" + str(last_song_pl.track.docfile)
+    ffmpeg_process = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
+    output = subprocess.check_output(("sudo", "./pifm", "-"), stdin=ffmpeg_process.stdout)
+    ffmpeg_process.wait()
 
 def fallback(request):
     return HttpResponseRedirect('/')
@@ -187,6 +205,11 @@ def MakeStreamList(texts, images, tracks, files):
 
     listing.reverse()
     return listing
+
+def playerSongFm(request):
+    last_song = GetFirstSongofPlaylist()
+    print last_song 
+    run('ffmpeg -i ' + last_song + ' -f s16le -ar 22.05k -ac 1 - | sudo ./pifm -')
 
 def songPlayingNow(request):
     returnjson = {
@@ -596,6 +619,9 @@ def RemoveTrackFromPlaylist(request, track_id):
     return HttpResponse(track_id)
 
 def VoteTrackUp(request, track_id): 
+    print "voting up"
+    Playfm()
+
     # get requested track by id
     track_requested = GetTrackById(track_id)
 
@@ -614,7 +640,9 @@ def VoteTrackUp(request, track_id):
   
     return HttpResponse(the_track_voted_for)
 
-def VoteTrackDown(request, track_id): 
+def VoteTrackDown(request, track_id):
+    print "voting "
+    Playfm() 
     try:
         track1 = Track.objects.get(pk=track_id)
     except Track.DoesNotExist:
