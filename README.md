@@ -5,14 +5,14 @@ partybox
 
 install: 
 * $ virtualenv dataparty
-$ cd dataparty 
-$ source bin/activate 
-$ git clone https://github.com/palletorsson/partybox.git
-$ cd partybox
-$ pip install -r requirements.txt 
-$ cd partybox
-$ python manage.py runserver
-(fix settings.py)
+* $ cd dataparty 
+* $ source bin/activate 
+* $ git clone https://github.com/palletorsson/partybox.git
+* $ cd partybox
+* $ pip install -r requirements.txt 
+* $ cd partybox
+* $ python manage.py runserver
+* (edit settings.py)
 
 
 thing to install apt-get:
