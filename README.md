@@ -35,10 +35,9 @@ Add these lines:
 * command = python media-server.py 
 * directory = /home/pi/pi-jockey/ 
 * user = pi
-
 Exit and save and restart your pi 
 
-run gunicorn
+Run gunicorn
 * $ gunicorn_django --workers=3 --bind 127.0.0.1:8000
 
 ( gunicorn partybox.wsgi:application )
