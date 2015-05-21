@@ -2,7 +2,6 @@ Partybox
 ========
 
 * login into the PI using ssh
-ssh pi@192.169.0.100 ()
 
 Installation: 
 * $ sudo apt-get update
