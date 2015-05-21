@@ -6,10 +6,6 @@ Partybox
 
 Installation: 
 * $ sudo apt-get update
-* $ sudo apt-get install virtualenv
-* $ virtualenv dataparty
-* $ cd dataparty 
-* $ source bin/activate 
 * $ git clone https://github.com/palletorsson/partybox.git
 * $ cd partybox
 * $ pip install -r requirements.txt 
