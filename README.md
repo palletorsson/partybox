@@ -17,7 +17,7 @@ Installation:
 * $ python manage.py runserver
 * (edit settings.py)
 
-* error: decoder jpeg not available
+Error: decoder jpeg not available
 * install libjpeg-dev with apt:
 * sudo apt-get install libjpeg-dev
 * need to do sudo apt-get update
@@ -36,14 +36,15 @@ Add these lines:
 * directory = /home/pi/pi-jockey/ 
 * user = pi
 
-Exit and save 
+Exit and save and restart your pi 
 
-* runing gunicorn
-gunicorn partybox.wsgi:application
+run gunicorn
+* $ gunicorn_django --workers=3 --bind 127.0.0.1:8000
 
-* create initial data
-manage.py loaddata initialdata.json
+( gunicorn partybox.wsgi:application )
+
+Create initial data
+* $ manage.py loaddata initialdata.json
 
 
-gunicorn_django --workers=3 --bind 127.0.0.1:8000
 
