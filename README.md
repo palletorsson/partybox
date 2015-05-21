@@ -4,7 +4,7 @@ partybox
 partybox
 
 install: 
-$ virtualenv dataparty
+* $ virtualenv dataparty
 $ cd dataparty 
 $ source bin/activate 
 $ git clone https://github.com/palletorsson/partybox.git
