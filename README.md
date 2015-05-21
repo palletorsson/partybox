@@ -17,28 +17,25 @@ MySql:
 Pip and Partybox:
 * $ sudo apt-get install python-pip
 * $ sudo apt-get install python-dev 
+* $ sudo apt-get install libjpeg-dev
 * $ git clone https://github.com/palletorsson/partybox.git
 * $ cd partybox
 * $ sudo pip install -r requirements.txt 
 * $ cd partybox
 * $ python manage.py runserver
 
-
-Error: decoder jpeg not available
-* install libjpeg-dev with apt:
-* sudo apt-get install libjpeg-dev
-* need to do sudo apt-get update
-
+Set up network, see instructions here:
+* https://github.com/palletorsson/network_setup_partybox
+ 
 To be able to extract sound data from mp3:
 * $ sudo apt-get install python-hachoir-metadata
 * $ sudo apt-get install python-hachoir-core
 
-Supervisor for securing start and restart of script. Enter:
-* $ sudo apt-get install supervisor 
+Supervisor, for securing start on boot and restart. Enter:
 * $ sudo nano /etc/supervisor/conf.d/flask_project.conf
 
 Add these lines:
-* [program:partyboc] 
+* [program:partybox] 
 * command = python media-server.py 
 * directory = /home/pi/pi-jockey/ 
 * user = pi
