@@ -2,10 +2,12 @@ Partybox
 ========
 
 * Prepare your Raspberry PI with a SD card with a RASPBIAN
+* Boot and expand filesystem, reboot
 * Login into the PI using ssh ( user:pi password:raspberry )
 
 Installation: 
-* $ sudo apt-get update
+* $ sudo apt-get update 
+* $ sudo apt-get install python-pip
 * $ git clone https://github.com/palletorsson/partybox.git
 * $ cd partybox
 * $ pip install -r requirements.txt 
