@@ -31,12 +31,12 @@ sudo apt-get install python-hachoir-core
 * $ sudo nano /etc/supervisor/conf.d/flask_project.conf
 
 Add these lines. Enter or Copy and Paste:
-
+========
 [program:partyboc] 
 command = python media-server.py 
 directory = /home/pi/pi-jockey/ 
 user = pi
-
+========
 Exit and save 
 
 * runing gunicorn
