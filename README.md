@@ -2,7 +2,7 @@ Partybox
 ========
 
 * Prepare your Raspberry PI with a SD card with a RASPBIAN
-* Login into the PI using ssh ( user: pi password:raspberry )
+* Login into the PI using ssh ( user:pi password:raspberry )
 
 Installation: 
 * $ sudo apt-get update
