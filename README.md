@@ -18,7 +18,7 @@ Pip and Partybox:
 * $ sudo apt-get install python-pip
 * $ git clone https://github.com/palletorsson/partybox.git
 * $ cd partybox
-* $ pip install -r requirements.txt 
+* $ sudo pip install -r requirements.txt 
 * $ cd partybox
 * $ python manage.py runserver
 
