@@ -16,6 +16,7 @@ MySql:
 
 Pip and Partybox:
 * $ sudo apt-get install python-pip
+* $ sudo apt-get install python-dev 
 * $ git clone https://github.com/palletorsson/partybox.git
 * $ cd partybox
 * $ sudo pip install -r requirements.txt 
