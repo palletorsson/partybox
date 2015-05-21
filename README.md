@@ -22,21 +22,19 @@ Installation:
 * sudo apt-get install libjpeg-dev
 * need to do sudo apt-get update
 
-* to be able to extract sound data from mp3:
-sudo apt-get install python-hachoir-metadata
-sudo apt-get install python-hachoir-core
+To be able to extract sound data from mp3:
+* $ sudo apt-get install python-hachoir-metadata
+* $ sudo apt-get install python-hachoir-core
 
-* Supervisor for securing start and restart of script. Enter:
+Supervisor for securing start and restart of script. Enter:
 * $ sudo apt-get install supervisor 
 * $ sudo nano /etc/supervisor/conf.d/flask_project.conf
 
-Add these lines. Enter or Copy and Paste:
-
+Add these lines:
 * [program:partyboc] 
 * command = python media-server.py 
 * directory = /home/pi/pi-jockey/ 
 * user = pi
-
 
 Exit and save 
 
