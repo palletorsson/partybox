@@ -6,10 +6,15 @@ Partybox
 * Login into the PI using ssh ( user:pi password:raspberry )
 
 Installation: 
+
+MySql:
 * $ sudo apt-get update 
 * $ sudo apt-get install mysql-server ( password:raspberry )
 * $ mysql -u root -p
 * CREATE DATABASE partybox;
+* $ sudo apt-get install libmysqlclient-dev
+
+Pip and Partybox:
 * $ sudo apt-get install python-pip
 * $ git clone https://github.com/palletorsson/partybox.git
 * $ cd partybox
