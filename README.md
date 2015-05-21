@@ -8,13 +8,15 @@ Partybox
 Installation: 
 * $ sudo apt-get update 
 * $ sudo apt-get install mysql-server ( password:raspberry )
+* $ mysql -u root -p
+* CREATE DATABASE partybox;
 * $ sudo apt-get install python-pip
 * $ git clone https://github.com/palletorsson/partybox.git
 * $ cd partybox
 * $ pip install -r requirements.txt 
 * $ cd partybox
 * $ python manage.py runserver
-* ( add and edit local_settings.py )
+
 
 Error: decoder jpeg not available
 * install libjpeg-dev with apt:
