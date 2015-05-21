@@ -35,10 +35,11 @@ Supervisor, for securing start on boot and restart. Enter:
 * $ sudo nano /etc/supervisor/conf.d/flask_project.conf
 
 Add these lines:
-* [program:partybox] 
-* command = python media-server.py 
-* directory = /home/pi/pi-jockey/ 
+* [program:partybox]
+* command = gunicorn_django --workers=3 --bind 127.0.0.1:8000
+* directory = /home/pi/partybox/partybox/partybox/
 * user = pi
+
 Exit and save and restart your pi 
 
 Run gunicorn
