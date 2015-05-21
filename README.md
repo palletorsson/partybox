@@ -1,9 +1,12 @@
-partybox
+Partybox
 ========
 
-partybox
+* login into the PI using ssh
+ssh pi@192.169.0.100 ()
 
-install: 
+Installation: 
+* $ sudo apt-get update
+* $ sudo apt-get install virtualenv
 * $ virtualenv dataparty
 * $ cd dataparty 
 * $ source bin/activate 
@@ -14,26 +17,20 @@ install:
 * $ python manage.py runserver
 * (edit settings.py)
 
-
-thing to install apt-get:
-
-* problem: decoder jpeg not available
+* error: decoder jpeg not available
 ** install libjpeg-dev with apt:
 ** sudo apt-get install libjpeg-dev
 ** need to do sudo apt-get update
-
-
 
 * to be able to extract sound data from mp3:
 sudo apt-get install python-hachoir-metadata
 sudo apt-get install python-hachoir-core
 
+* install supervisor
+* 
 
 * runing gunicorn
 gunicorn partybox.wsgi:application
-
-* login into the PI using ssh
-ssh pi@192.169.0.100
 
 * create initial data
 manage.py loaddata initialdata.json
