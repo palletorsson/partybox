@@ -3,6 +3,10 @@ Partybox
 
 * Prepare your Raspberry PI with a SD card with a RASPBIAN
 * Boot and expand filesystem, reboot
+
+Set up the the access point. This will allow anyone with Wi-Fi on their laptop or phone to connect to the pi using the SSID "partyBox" and in the end interact with the local server. See Instructions here:
+* https://github.com/palletorsson/network_setup_partybox
+
 * Login into the PI using ssh ( user:pi password:raspberry )
 
 Installation: 
@@ -24,8 +28,6 @@ Pip and Partybox:
 * $ cd partybox
 * $ python manage.py runserver
 
-Set up network, see instructions here:
-* https://github.com/palletorsson/network_setup_partybox
  
 To be able to extract sound data from mp3:
 * $ sudo apt-get install python-hachoir-metadata
