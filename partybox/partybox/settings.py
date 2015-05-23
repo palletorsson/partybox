@@ -15,9 +15,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 PROJECT_ROOT        = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
 STATIC_ROOT         = os.path.join(PROJECT_ROOT, 'static')
-print STATIC_ROOT
-STATIC_URL 			= STATIC_ROOT+"/" 
+STATIC_ROOT 	    = STATIC_ROOT+"/" 
 MEDIA_ROOT          = os.path.join(PROJECT_ROOT, 'media')
+MEDIA_ROOT          = MEDIA_ROOT+"/"
+
+STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 #MEDIA_URL 			= MEDIA_ROOT+"/"
 STATIC_URL_PLAIN = "/static/"
@@ -113,7 +115,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 
 
-    '/home/pi/partybox/partybox/partybox/theme/templates/',
+    '/home/pi/partybox/partybox/theme/templates/',
 
 )
 
