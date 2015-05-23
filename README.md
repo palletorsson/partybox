@@ -4,7 +4,8 @@ Partybox
 * Prepare your Raspberry PI with a SD card with a RASPBIAN
 * Boot and expand filesystem, reboot
 
-Set up the the access point. This will allow anyone with Wi-Fi on their laptop or phone to connect to the pi using the SSID "partyBox" and in the end interact with the local server. See Instructions here:
+* Setup the the wifi-network as a honeypot. This will allow anyone with Wi-Fi on their laptop or phone to connect to the pi using the SSID "partyBox" and in the end it will allow of interaction with the local server. 
+* See Instructions here:
 * https://github.com/palletorsson/network_setup_partybox
 
 * Login into the PI using ssh ( user:pi password:raspberry )
