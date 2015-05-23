@@ -4,17 +4,17 @@ Partybox
 * Prepare your Raspberry PI with a SD card with a RASPBIAN
 * Boot and expand filesystem, reboot
 
-* Setup the the wifi-network as a honeypot. This will allow anyone with Wi-Fi on their laptop or phone to connect to the pi using the SSID "partyBox" and in the end it will allow of interaction with the local server. 
+* Setup the the wifi-network as a honeypot. This will allow anyone with Wi-Fi on their laptop or phone to connect to the PI using the SSID "partyBox" and in the end it will allow of interaction with the local server. 
 * See Instructions here:
 * https://github.com/palletorsson/network_setup_partybox
 
-* Login into the PI using ssh ( user:pi password:raspberry )
+Installation of the webserver:
 
-Installation: 
+* Login into the PI using ssh ( user:pi password:raspberry )
 
 MySql:
 * $ sudo apt-get update 
-* $ sudo apt-get install mysql-server ( password:raspberry )
+* $ sudo apt-get install mysql-server ( I use the password:raspberry )
 * $ mysql -u root -p
 * CREATE DATABASE partybox;
 * $ sudo apt-get install libmysqlclient-dev
