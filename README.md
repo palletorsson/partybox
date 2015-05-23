@@ -17,6 +17,7 @@ MySql:
 * $ sudo apt-get install mysql-server ( I use the password:raspberry )
 * $ mysql -u root -p
 * CREATE DATABASE partybox;
+* exit
 * $ sudo apt-get install libmysqlclient-dev
 
 Pip and Partybox:
