@@ -36,6 +36,7 @@ To be able to extract sound data from mp3:
 * $ sudo apt-get install python-hachoir-core
 
 Supervisor, for securing start on boot and restart. Enter:
+* $ sudo apt-get install supervisor
 * $ sudo nano /etc/supervisor/conf.d/flask_project.conf
 
 Add these lines:
