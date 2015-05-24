@@ -39,14 +39,17 @@ Supervisor, for securing start on boot and restart. Enter:
 * $ sudo nano /etc/supervisor/conf.d/flask_project.conf
 
 Add these lines:
-* [program:partybox]
-* command = gunicorn_django --workers=3 --bind 127.0.0.1:8000
-* directory = /home/pi/partybox/partybox/partybox/
-* user = pi
+
+<pre>
+[program:partybox]
+command = gunicorn_django --workers=3 --bind 127.0.0.1:8000
+directory = /home/pi/partybox/partybox/
+user = pi
+</pre>
 
 Exit and save and restart your pi 
 
-Run gunicorn
+Before Supervisor Run gunicorn by:
 * $ gunicorn_django --workers=3 --bind 127.0.0.1:8000
 
 ( gunicorn partybox.wsgi:application )
