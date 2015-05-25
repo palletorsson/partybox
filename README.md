@@ -55,7 +55,7 @@ directory = /home/pi/partybox/partybox/
 user = pi
 </pre>
 
-Save and exit (Ctrl X y) 
+_ Save and exit (Ctrl X y) 
 
 Also install the open source reverse proxy server Nginx:
 * $ sudo apt-get intall nginx
@@ -115,7 +115,7 @@ Install hostapd.
 Setting up a free wifi hotspot:
 * $ sudo nano /etc/hostapd/hostapd.conf 
 
-_ Add these lines:
+Add these lines:
 <pre> 
 interface=wlan0
 driver=rtl871xdrv
@@ -131,7 +131,7 @@ wmm_enabled=0
 Activate hostapd as default:
 * $ sudo nano /etc/default/hostapd
 
-_ Edit the DAEMON_CONF="":
+Edit the DAEMON_CONF="":
 
 <pre> 
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
@@ -139,7 +139,7 @@ DAEMON_CONF="/etc/hostapd/hostapd.conf"
 
 _ Save and exit (Ctrl X y) 
 
-Optional Reboot:
+Here you can do an optional Reboot:
 * $ sudo reboot
 
 * See that the Pi start without errors
@@ -160,8 +160,7 @@ Install Dnsmasq:
 * $ sudo apt-get install dnsmasq 
 * $ sudo nano /etc/dnsmasq.conf
 
-_ Add these lines:
-
+Add these lines:
 <pre>
 address=/#/192.168.10.1
 interface=wlan0
@@ -171,8 +170,7 @@ no-resolv
 
 _ Save and exit (Ctrl X y) 
 
-
-Optional Reboot:
+Here you can do an optional Reboot:
 * $ sudo reboot
 
 * See that the Pi start without errors
