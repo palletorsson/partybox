@@ -1,19 +1,19 @@
 Partybox
 ========
 
-* Prepare your Raspberry PI with a SD card with a RASPBIAN:
-https://www.raspberrypi.org/documentation/installation/installing-images/README.md
-* Boot and expand filesystem, change timezone, etc and reboot
-* The setup assumes that how have linux computer on the same the Pi.
+* Prepare your Raspberry PI with an SD card with RASPBIAN:
+_ See instructions here: https://www.raspberrypi.org/documentation/installation/installing-images/README.md
+* Boot and expand filesystem, change timezone, etc. and reboot
+* The setup assumes that how have Linux computer on the same the Pi.
 
 Installation of the MySql, Django Webserver, Nginx:
-* Login into the PI using ssh ( user:pi password:raspberry )
+* Login into the PI using ssh ( user: pi password: raspberry )
 
 Update:
 * $ sudo apt-get update
 
 install MySql:
-* $ sudo apt-get install mysql-server ( I use the password:raspberry )
+* $ sudo apt-get install mysql-server ( I use the password: raspberry )
 * $ mysql -u root -p
 * CREATE DATABASE partybox;
 * exit
@@ -30,7 +30,7 @@ Pip, Partybox and additional liberies:
 
 Create database tables:
 * $ python manage.py syncdb
-* (create a user pi password:raspberry)
+* (create a user pi password: raspberry)
 
 Import initial data:
 * $ python manage.py loaddata initialdata.json
@@ -42,7 +42,7 @@ To be able to extract sound data from mp3 install:
 * $ sudo apt-get install python-hachoir-metadata
 * $ sudo apt-get install python-hachoir-core
 
-For the partybox to start at boot we install Supervisor:
+For the partybox to start at boot, we install Supervisor:
 * $ sudo apt-get install supervisor
 * $ sudo nano /etc/supervisor/conf.d/partybox_project.conf
 
@@ -102,13 +102,12 @@ _ Save and exit (Ctrl X y)
 Restart your pi: 
 * $ sudo reboot
 
-
-If everything works it is time to setup the the wifi-network as a honeypot. This will allow anyone with Wi-Fi on their laptop or phone to connect to the PI using the SSID "partyBox" and share. 
+If everything works, it is time to setup the WiFi-network as a honeypot. The setup will allow anyone with Wi-Fi on their laptop or phone to connect to the PI using the SSID "partyBox" and share.  
 
 Network setup partybox
 ======================
 
-* Login into the PI using ssh ( user:pi password:raspberry )
+* Login into the PI using ssh ( user:pi password: raspberry )
 
 Install hostapd. 
 * $ sudo apt-get install hostapd
@@ -155,7 +154,7 @@ Here is how to start, stop, restart hostapd:
 * $ /etc/init.d/hostapd stop
 * $ /etc/init.d/hostapd restart
 
-2. Setting up a DHCP Server, we will use dnsmasq. In this exampel we will use 192.168.10.1 as the Pi:s IP-address and a range 192.168.10.2 to 192.168.10.250 addresses to assigne to connecting computers. 
+Setting up a DHCP Server, we will use dnsmasq. In this example, we will use 192.168.10.1 as the Pi:s IP-address and a range 192.168.10.2 to 192.168.10.250 addresses to assign to connecting computers. 
 
 Install Dnsmasq:
 * $ sudo apt-get install dnsmasq 
@@ -211,10 +210,12 @@ Edit Iptables firewall to direct outside request to local webserver:
 *
 * $ sudo sh -c "iptables-save > /etc/iptables.rules"
 
-Now 
-* sudo reboot and check to see that everything seem to work. You should now be able to logon the free wifi "partyBox" and start sharing.
+Now Reboot:
+* $ sudo reboot.
 
-I used these referances to set up the network:
+Check to see that everything seem to work. You should now be able to log on the free WiFi "partyBox" and start sharing.
+
+I used these references to set up the network:
 * http://www.daveconroy.com/turn-your-raspberry-pi-into-a-wifi-hotspot-with-edimax-nano-usb-ew-7811un-rtl8188cus-chipset/
 * http://www.daveconroy.com/using-your-raspberry-pi-as-a-wireless-router-and-web-server/
 * http://raspberrypihq.com/how-to-turn-a-raspberry-pi-into-a-wifi-router/
