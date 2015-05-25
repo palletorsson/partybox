@@ -6,8 +6,7 @@ https://www.raspberrypi.org/documentation/installation/installing-images/README.
 * Boot and expand filesystem, change timezone, etc and reboot
 * The setup assumes that how have linux computer on the same the Pi.
 
-Installation of the webserver:
-
+Installation of the MySql, Django Webserver, Nginx:
 * Login into the PI using ssh ( user:pi password:raspberry )
 
 Update:
@@ -56,6 +55,7 @@ directory = /home/pi/partybox/partybox/
 user = pi
 </pre>
 
+Save and exit (Ctrl X y) 
 
 Also install the open source reverse proxy server Nginx:
 * $ sudo apt-get intall nginx
@@ -97,9 +97,10 @@ server {
 }
 </pre>
 
-Exit and save 
+_ Save and exit (Ctrl X y) 
 
-Restart your pi. 
+Restart your pi: 
+* $ sudo reboot
 
 
 * Setup the the wifi-network as a honeypot. This will allow anyone with Wi-Fi on their laptop or phone to connect to the PI using the SSID "partyBox" and in the end it will allow of interaction with the local server. 
@@ -107,13 +108,15 @@ Restart your pi.
 Network setup partybox
 ======================
 
-1. Install hostapd. This will allow anyone with Wi-Fi on their laptop or phone to connect to the pi using the SSID "partyBox".
+* Login into the PI using ssh ( user:pi password:raspberry )
 
+Install hostapd. 
 * $ sudo apt-get install hostapd
 
-Setting up a free wifi
+Setting up a free wifi hotspot:
 * $ sudo nano /etc/hostapd/hostapd.conf 
 
+_ Add these lines:
 <pre> 
 interface=wlan0
 driver=rtl871xdrv
@@ -123,20 +126,25 @@ auth_algs=1
 wmm_enabled=0
 </pre>
 
-* driver=rtl871xdrv (nl80211 most used)
 * The driver you are using depends on what wireless card you use
+* I use the driver=rtl871xdrv (but nl80211 is a more common one)
 
-Also:
-* sudo nano /etc/default/hostapd
+Activate hostapd as default:
+* $ sudo nano /etc/default/hostapd
+
+_ Edit the DAEMON_CONF="":
 
 <pre> 
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
 </pre>
 
-Reboot 
+_ Save and exit (Ctrl X y) 
+
+Optional Reboot:
 * $ sudo reboot
 
-* Log in again see that the Pi start without errors
+* See that the Pi start without errors
+* Login into the PI using ssh ( user:pi password:raspberry )
 
 Tips: Check hostapd
 * $ sudo service hostapd status
@@ -149,9 +157,11 @@ Here is how to start, stop, restart hostapd:
 
 2. Setting up a DHCP Server, we will use dnsmasq. In this exampel we will use 192.168.10.1 as the Pi:s IP-address and a range 192.168.10.2 to 192.168.10.250 addresses to assigne to connecting computers. 
 
-Opt 1: install dnsmasq
+Install Dnsmasq:
 * $ sudo apt-get install dnsmasq 
 * $ sudo nano /etc/dnsmasq.conf
+
+_ Add these lines:
 
 <pre>
 address=/#/192.168.10.1
@@ -160,15 +170,23 @@ dhcp-range=192.168.10.1,192.168.10.250,12h
 no-resolv
 </pre>
 
+_ Save and exit (Ctrl X y) 
+
+
+Optional Reboot:
+* $ sudo reboot
+
+* See that the Pi start without errors
+* Login into the PI using ssh ( user:pi password:raspberry )
+
 Check dnsmasq
 * $ sudo service dnsmasq status
 
-
-Define a subnet the wireless card.
+Next Step: Define a subnet the wireless card.
 * $ sudo nano /etc/network/interfaces
 
+_ Add these lines:
 <pre> 
- 
 auto lo
 
 iface lo inet loopback
@@ -180,10 +198,9 @@ iface wlan0 inet static
   broadcast 255.0.0.0
 
 pre-up iptables-restore < /etc/iptables.rules
-
 </pre>
 
-Direct outside request to local webserver 
+Edit Iptables firewall to direct outside request to local webserver: 
 
 * $ sudo iptables -F
 * $ sudo iptables -i wlan0 -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
@@ -191,11 +208,11 @@ Direct outside request to local webserver
 * $ sudo iptables -i wlan0 -A INPUT -p udp --dport 53 -j ACCEPT
 * $ sudo iptables -i wlan0 -A INPUT -p udp --dport 67:68 -j ACCEPT
 * $ sudo iptables -i wlan0 -A INPUT -j DROP
-
+*
 * $ sudo sh -c "iptables-save > /etc/iptables.rules"
 
 Now 
-* sudo reboot and check to see that everything seem to work.
+* sudo reboot and check to see that everything seem to work. You should now be able to logon the free wifi "partyBox" and start sharing.
 
 I used these referances to set up the network:
 * http://www.daveconroy.com/turn-your-raspberry-pi-into-a-wifi-hotspot-with-edimax-nano-usb-ew-7811un-rtl8188cus-chipset/
@@ -206,8 +223,6 @@ I used these referances to set up the network:
 * https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/install-software
  
 Old ideas:
-
-
 
 * $ sudo nano /etc/hosts
 <pre>
