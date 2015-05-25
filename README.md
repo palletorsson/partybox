@@ -43,7 +43,7 @@ To be able to extract sound data from mp3 install:
 * $ sudo apt-get install python-hachoir-metadata
 * $ sudo apt-get install python-hachoir-core
 
-For start at boot and restart install Supervisor:
+For the partybox to start at boot we install Supervisor:
 * $ sudo apt-get install supervisor
 * $ sudo nano /etc/supervisor/conf.d/partybox_project.conf
 
@@ -57,7 +57,7 @@ user = pi
 </pre>
 
 
-Install nginx:
+Also install the open source reverse proxy server Nginx:
 * $ sudo apt-get intall nginx
 * $ sudo nano /etc/nginx/site-available/partybox 
 
@@ -97,7 +97,9 @@ server {
 }
 </pre>
 
-Exit and save and restart your pi 
+Exit and save 
+
+Restart your pi. 
 
 
 * Setup the the wifi-network as a honeypot. This will allow anyone with Wi-Fi on their laptop or phone to connect to the PI using the SSID "partyBox" and in the end it will allow of interaction with the local server. 
