@@ -195,10 +195,10 @@ iface wlan0 inet static
   broadcast 255.0.0.0
 
 pre-up iptables-restore < /etc/iptables.rules
+#pre-up iptables-restore < /etc/iptables.ipv4.nat
 </pre>
 
 Edit Iptables firewall to direct outside request to local webserver: 
-
 * $ sudo iptables -F
 * $ sudo iptables -i wlan0 -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 * $ sudo iptables -i wlan0 -A INPUT -p tcp --dport 80 -j ACCEPT
