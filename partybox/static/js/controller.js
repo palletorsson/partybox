@@ -1,3 +1,4 @@
+
 var myApp = angular.module('myApp', []); 
 
 myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($scope, $http, fileUpload)  {
@@ -88,7 +89,7 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
 			 stop_voting.removeAttr('disabled');
 		}, 30000);
 	    
-		$http.get("/votetrackup/"+id)
+		$http.get("/votetrackup/"+id+"/")
 			.success(function(data) {
 				$scope.getLastPlaylist();
   		}); 

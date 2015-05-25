@@ -64,7 +64,7 @@ def AddPost(request):
     return HttpResponse('200')
 
 def Home(request):
-    Playfm()
+    #Playfm()
     return render_to_response('publication/home.html',  context_instance=RequestContext(request))
 
 def StartFm(request):
@@ -620,7 +620,7 @@ def RemoveTrackFromPlaylist(request, track_id):
 
 def VoteTrackUp(request, track_id): 
     print "voting up"
-    Playfm()
+    #Playfm()
 
     # get requested track by id
     track_requested = GetTrackById(track_id)
@@ -642,7 +642,7 @@ def VoteTrackUp(request, track_id):
 
 def VoteTrackDown(request, track_id):
     print "voting "
-    Playfm() 
+    #Playfm() 
     try:
         track1 = Track.objects.get(pk=track_id)
     except Track.DoesNotExist:
