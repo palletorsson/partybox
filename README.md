@@ -4,10 +4,6 @@ Partybox
 * Prepare your Raspberry PI with a SD card with a RASPBIAN
 * Boot and expand filesystem, reboot
 
-* Setup the the wifi-network as a honeypot. This will allow anyone with Wi-Fi on their laptop or phone to connect to the PI using the SSID "partyBox" and in the end it will allow of interaction with the local server. 
-* See Instructions here:
-* https://github.com/palletorsson/network_setup_partybox
-
 Installation of the webserver:
 
 * Login into the PI using ssh ( user:pi password:raspberry )
@@ -28,14 +24,23 @@ Pip and Partybox:
 * $ cd partybox
 * $ sudo pip install -r requirements.txt 
 * $ cd partybox
+
+Create database tables:
+* $ python manage.py syncdb
+* (create a user pi password:raspberry)
+
+Import initial data:
+* $ python manage.py loaddata initialdata.json
+
+Test run server:
 * $ python manage.py runserver
 
  
-To be able to extract sound data from mp3:
+To be able to extract sound data from mp3 install:
 * $ sudo apt-get install python-hachoir-metadata
 * $ sudo apt-get install python-hachoir-core
 
-Supervisor, for securing start on boot and restart. Enter:
+For securing start on boot and restart install Supervisor:
 * $ sudo apt-get install supervisor
 * $ sudo nano /etc/supervisor/conf.d/flask_project.conf
 
@@ -50,13 +55,12 @@ user = pi
 
 Exit and save and restart your pi 
 
-Before Supervisor Run gunicorn by:
-* $ gunicorn_django --workers=3 --bind 127.0.0.1:8000
-
-( gunicorn partybox.wsgi:application )
-
-Create initial data
-* $ manage.py loaddata initialdata.json
+Install nginx:
 
 
+
+* Setup the the wifi-network as a honeypot. This will allow anyone with Wi-Fi on their laptop or phone to connect to the PI using the SSID "partyBox" and in the end it will allow of interaction with the local server. 
+
+* See Instructions here:
+* https://github.com/palletorsson/network_setup_partybox
 
