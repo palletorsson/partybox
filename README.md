@@ -103,7 +103,7 @@ Restart your pi:
 * $ sudo reboot
 
 
-* Setup the the wifi-network as a honeypot. This will allow anyone with Wi-Fi on their laptop or phone to connect to the PI using the SSID "partyBox" and in the end it will allow of interaction with the local server. 
+If everything works it is time to setup the the wifi-network as a honeypot. This will allow anyone with Wi-Fi on their laptop or phone to connect to the PI using the SSID "partyBox" and share. 
 
 Network setup partybox
 ======================
