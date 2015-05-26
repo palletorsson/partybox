@@ -23,6 +23,7 @@ Pip, Partybox and additional liberies:
 * $ sudo apt-get install python-pip
 * $ sudo apt-get install python-dev 
 * $ sudo apt-get install libjpeg-dev
+* $ sudo apt-get install ffmpeg
 * $ git clone https://github.com/palletorsson/partybox.git
 * $ cd partybox
 * $ sudo pip install -r requirements.txt 
