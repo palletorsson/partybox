@@ -51,12 +51,40 @@
 	 
  </form>
  </div>
+
+{% if user.is_authenticated %}
+    	<div class="media media steampost text_fill read_alert">
+		
+		<span class="radiotalk">
+			<button class="btn btn-xs talk" ng-click="radioTalk()" >
+				<span class="muteicon glyphicon glyphicon-bullhorn label label-danger"> </span>
+			</button>
+		</span>
+
+
+		<span class="radiogaga">
+			<button class="btn btn-xs radiogaga" ng-click="radioGaGa()" >
+				<span class="glyphicon glyphicon-tags label label-danger"> </span>
+			</button>
+		</span>
+
+
+		<span class="tracknext">
+			<button class="btn btn-xs nexttrack" ng-click="nextTrack()" >
+				<span class="glyphicon glyphicon-step-forward label label-danger"> </span>
+			</button>
+		</span>
+
+	</div>
+	<hr>
+{%endif%}
+
 <div class="media media steampost text_fill">
 		 <hr>
   <form enctype="multipart/form-data"  name="myForm">
     {% csrf_token %}
 	  <div class="form-group">
-		<input  class="form-control zform" ng-model="post.body"  id="id_body" name="body" placeholder="Whats on your mind?" ng-maxlength="512">
+		<input  class="form-control zform" ng-model="post.body"  id="id_body" name="body" placeholder="Notes..." ng-maxlength="512">
 		   <span class="error label label-danger"  ng-show="myForm.body.$error.maxlength">Your post can not be longer then 512 characters</span><br>
        
 	  </div> 

@@ -1,7 +1,7 @@
 from django.conf.urls import *
 
 from django.views.generic.base import RedirectView
-from apps.publication.views import Posts, AddPost, AddTrackToPlayList, GetLists, GetPlaylist, RemoveTrackFromPlaylist, Home, VoteTrackUp, VoteTrackDown, JsonMessages, JsonImages, JsonTracks, fallback, JsonPosts, JsonFiles, songPlayingNow, removeLastTrackFromPlaylist, playerSongFm, CaptureAll, StartFm
+from apps.publication.views import Posts, AddPost, AddTrackToPlayList, StartFm, RadioTalk, SayRadioGaga, playNextSong, GetLists, GetPlaylist, RemoveTrackFromPlaylist, Home, VoteTrackUp, VoteTrackDown, JsonMessages, JsonImages, JsonTracks, fallback, JsonPosts, JsonFiles, songPlayingNow, removeLastTrackFromPlaylist, playerSongFm, CaptureAll
 from django.contrib import admin
 
 
@@ -23,7 +23,9 @@ urlpatterns = patterns('',
     url(r'^removetrackfromplaylist/(?P<track_id>[-_\w]+)/$', RemoveTrackFromPlaylist, name= 'getplaylist'),
     url(r'^votetrackup/(?P<track_id>[-_\w]+)/$', VoteTrackUp, name= 'votetrackup'),
     url(r'^votetrackdown/(?P<track_id>[-_\w]+)/$', VoteTrackDown, name= 'votetrackdown'),
-    url(r'^startfm/$', StartFm, name='startfm'),
+    url(r'^nexttrack/$', playNextSong, name='playnextsong'),
+    url(r'^starttalk/$', RadioTalk, name='radiotalk'),
+    url(r'^gaga/$', SayRadioGaga, name='sayradiogaga'),
     url(r'^home/$', Home, name= 'home'),
     url(r'^.*/$', CaptureAll, name= 'captureall'),
     url(r'^.*$', CaptureAll, name= 'captureall'),

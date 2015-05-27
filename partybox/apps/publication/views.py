@@ -64,18 +64,8 @@ def AddPost(request):
     return HttpResponse('200')
 
 def Home(request):
-    #Playfm()
     return render_to_response('publication/home.html',  context_instance=RequestContext(request))
 
-def StartFm(request):
-    Playfm()
-
-def Playfm():
-    last_song_pl = GetFirstSongofPlaylist() 
-    last_song_file = str(settings.PROJECT_ROOT) + "/media/" + str(last_song_pl.track.docfile)
-    ffmpeg_process = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
-    output = subprocess.check_output(("sudo", "./pifm", "-"), stdin=ffmpeg_process.stdout)
-    ffmpeg_process.wait()
 
 def fallback(request):
     return HttpResponseRedirect('/')
@@ -270,6 +260,15 @@ def removeLastTrackFromPlaylist(request):
     returndata = json.dumps({"trackremoved":init_track.track.title})
     response = HttpResponse(returndata, mimetype='application/json')
     return response
+
+def RadioRemoveLastTrack():   
+    radio_list = getlastplaylist()
+    try:
+        track_remove_from_radio_list = radio_list[0]
+        track_remove_from_radio_list.delete()
+    except:
+        print "not track to delete"
+  
     
 def IsTrackDone(request, current_track): 
     # set track done to false
@@ -700,4 +699,93 @@ def epoch(value):
     except AttributeError:
         return ''
 
+# radio logic
+global sound
+global output
 
+global talk
+global talk_output
+
+def StartFm(request):
+    Playfm()
+
+def Playfm(request):
+    ffmpeg_process = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
+    output = subprocess.check_output(("sudo", "/home/pi/partybox/partybox/pifm", "-" "104.1" "22050"), stdin=ffmpeg_process.stdout)
+    ffmpeg_process.wait()
+
+timeplayed = 1 
+#ffmpeg -i 1.mp3 -f s16le -ar 22.05k -ac 1 - | sudo ./pifm -^C
+def playNextSong(request):
+    TrackPlayer()
+    return HttpResponse("song aling...")
+
+def TrackPlayer():
+    StopAudio()    
+
+    time.sleep(0.5)
+    last_song_pl = GetFirstSongofPlaylist() 
+    last_song_file = str(settings.PROJECT_ROOT) + "/media/" + str(last_song_pl.track.docfile)
+    print "playing: ", last_song_file
+    RadioRemoveLastTrack()
+    sound = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1",  "-t", "20", "-"), stdout=subprocess.PIPE)
+    output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "104.1", "22050"), stdin=sound.stdout)
+    print "track removed"
+    time.sleep(0.5)
+
+
+def SayRadioGaga(request):
+
+    StopAudio()    
+    dir_ = os.path.dirname(os.path.abspath(__file__))
+    print dir_
+    print "radio, gaga"
+    time.sleep(0.5)
+
+    sound = subprocess.Popen(("ffmpeg", "-i", "/home/pi/partybox/partybox/media/gaga_intro.mp3", "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
+    output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "104.1", "22050"), stdin=sound.stdout) 
+    return HttpResponse("sing along...")
+
+def RadioTalk(request):
+
+    StopAudio()    
+
+    print "Time to talk"
+    time.sleep(0.5)
+ 
+    talk = subprocess.Popen(["arecord", "-fS16_LE", "-r", "22050", "-Dplughw:1,0", "-d", "100"], stdout=subprocess.PIPE)
+    talk_output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "104.1", "22050"), stdin=talk.stdout)
+    time.sleep(10)
+    talk.kill()
+    talk_output.kill()
+
+    #return_code_output = sound.output()
+    #return_code_output.stdin.write("q")
+    #return_code_sound.stdin.write("q")
+    
+    #RemoveSongFromPlaylist()
+    #SayRadioGaga()
+    #PlaySong()
+    return HttpResponse("start talking...")      
+
+def StopAudio():
+    try:
+        return_code_sound = sound.poll()
+        return_code_output = sound.poll()
+
+        if return_code_sound == None:
+            return_code_sound.stdin.write("q")
+            print "song stopped"
+
+        if return_code_output == None:
+            return_code_output.stdin.write("q")
+            print "song output stopped"
+
+    except:
+        print "nothing playing"
+
+    try: 
+        talk.kill()
+        talk_output.kill()
+    except: 
+        print "no mic stopped"

@@ -52,7 +52,7 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
 	  $( ".fileform" ).toggle();
   }
   $scope.showAll = function() {
-	  console.log("fuck");
+	  console.log("showall");
   }
 
   // iframe for images	  	
@@ -87,13 +87,68 @@ myApp.controller('MyController', ['$scope', '$http', 'fileUpload',  function($sc
 	    stop_voting.attr('disabled','disabled');
 	    setTimeout(function() {
 			 stop_voting.removeAttr('disabled');
-		}, 30000);
+		}, 20000);
 	    
 		$http.get("/votetrackup/"+id+"/")
 			.success(function(data) {
 				$scope.getLastPlaylist();
   		}); 
   }
+  // talk to radio
+  $scope.radioTalk = function() {
+	    // disable talkbutton for 2 sec. 
+	    var radiobutton = $(".talk")
+	    radiobutton.attr('disabled','disabled');
+	    setTimeout(function() {
+			 radiobutton.removeAttr('disabled');
+		}, 20000);
+	    
+		$http.get("/starttalk/")
+			.success(function(data) {
+				console.log(data) 
+ 		}); 
+  }
+  $scope.radioGaGa = function() {
+	    // disable radiogagabutton for 2 sec. 
+	    var gagabutton = $(".gaga")
+	    gagabutton.attr('disabled','disabled');
+	    setTimeout(function() {
+			 gagabutton.removeAttr('disabled');
+		}, 20000);
+	    
+		$http.get("/gaga/")
+			.success(function(data) {
+				console.log(data) 
+ 		}); 
+  }
+
+  $scope.nextTrack = function() {
+	    // disable nexttrack for 2 sec. 
+	    var nexttrackbutton = $(".nexttrack")
+	    nexttrackbutton.attr('disabled','disabled');
+	    setTimeout(function() {
+			 nexttrackbutton.removeAttr('disabled');
+		}, 20000);
+	    
+		$http.get("/nexttrack/")
+			.success(function(data) {
+				console.log(data) 
+ 		}); 
+  }
+  $scope.radioStop = function() {
+	    // disable stopradiobutton for 2 sec. 
+	    var stopradiobutton = $(".stopradio")
+	    stopradiobutton.attr('disabled','disabled');
+	    setTimeout(function() {
+			 stopradiobutton.removeAttr('disabled');
+		}, 20000);
+	    
+		$http.get("/stopradio/")
+			.success(function(data) {
+				console.log(data) 
+ 		}); 
+  }
+
   // 4 fileupload
   // file upload och form submit
   $scope.uploadFile = function(body){
