@@ -169,10 +169,29 @@ dhcp-range=192.168.10.1,192.168.10.250,12h
 no-resolv
 </pre>
 
-_ Save and exit (Ctrl X y) 
+
+_ Save and exit 
+* $ sudo service dnsmasq restart
+
+These actions will lock the PI out of internet. To get internet connection back: 
+
+* $ sudo nano /etc/dnsmasq.conf
+
+Add these lines:
+<pre>
+address=/lan/192.168.10.1
+interface=wlan0
+dhcp-range=192.168.10.1,192.168.10.250,12h
+#no-resolv
+server=8.8.8.8
+
+_ Save and exit 
+* $ sudo service dnsmasq restart
+
 
 Here you can do an optional Reboot:
 * $ sudo reboot
+
 
 * See that the Pi start without errors
 * Login into the PI using ssh ( user:pi password:raspberry )
