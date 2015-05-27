@@ -209,6 +209,11 @@ Edit Iptables firewall to direct outside request to local webserver:
 *
 * $ sudo sh -c "iptables-save > /etc/iptables.rules"
 
+Tips:
+List iptables 
+iptables -L -n
+iptables -L -v
+
 Now Reboot:
 * $ sudo reboot.
 
@@ -229,12 +234,14 @@ Old ideas:
 * 127.0.0.1 
 </pre>
 
-
 * $ sudo nano /etc/sysctl.conf
+
 * Add the following line to the bottom of the file:
 <pre> 
 
 net.ipv4.ip_forward=1
+
+
 
 </pre>
 
