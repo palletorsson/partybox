@@ -13,7 +13,7 @@ import json
 from django.http import HttpResponseNotAllowed
 from datetime import datetime, timedelta
 from django.contrib.sessions.backends.db import SessionStore
-#import threading
+import threading
 import subprocess
 import time
 from fabric.api import local
@@ -33,7 +33,8 @@ from hachoir_parser import guessParser
 from hachoir_metadata import extractMetadata
 
 playmode = 'A' 
-
+playing = False
+    
 def CaptureAll(request):
     return HttpResponseRedirect('/home/')
 
@@ -63,7 +64,8 @@ def AddPost(request):
  
     return HttpResponse('200')
 
-def Home(request):
+
+def Home(request):  
     return render_to_response('publication/home.html',  context_instance=RequestContext(request))
 
 
@@ -700,10 +702,9 @@ def epoch(value):
         return ''
 
 # radio logic
-global sound
-global output
-
+global sound 
 global talk
+global output
 global talk_output
 
 def StartFm(request):
@@ -714,78 +715,108 @@ def Playfm(request):
     output = subprocess.check_output(("sudo", "/home/pi/partybox/partybox/pifm", "-" "104.1" "22050"), stdin=ffmpeg_process.stdout)
     ffmpeg_process.wait()
 
-timeplayed = 1 
 #ffmpeg -i 1.mp3 -f s16le -ar 22.05k -ac 1 - | sudo ./pifm -^C
 def playNextSong(request):
     TrackPlayer()
     return HttpResponse("song aling...")
 
-def TrackPlayer():
-    StopAudio()    
 
+def TrackPlayer():
+    StopAudio()     
+    global sound
     time.sleep(0.5)
     last_song_pl = GetFirstSongofPlaylist() 
+
+    #t = threading.Thread(target=tracktimer, kwargs={"duration":last_song_pl.track.duration})
+    #t.setDaemon(True)
+    #t.start()
+
     last_song_file = str(settings.PROJECT_ROOT) + "/media/" + str(last_song_pl.track.docfile)
     print "playing: ", last_song_file
     RadioRemoveLastTrack()
-    sound = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1",  "-t", "20", "-"), stdout=subprocess.PIPE)
-    output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "104.1", "22050"), stdin=sound.stdout)
-    print "track removed"
-    time.sleep(0.5)
+    sound = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1",  "-"), stdout=subprocess.PIPE)
+    output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "108.1", "22050"), stdin=sound.stdout)
+    
 
-
+def tracktimer(duration):
+    min = duration[2:4]
+    sec = duration[5:7]
+    timer = (int(min)*60)+int(sec)
+    track_playing = True
+    time.sleep(timer+2)
+    TrackPlayer()
+    
 def SayRadioGaga(request):
-
     StopAudio()    
-    dir_ = os.path.dirname(os.path.abspath(__file__))
-    print dir_
-    print "radio, gaga"
+    global sound
+    print "radio - gaga ..."
     time.sleep(0.5)
-
     sound = subprocess.Popen(("ffmpeg", "-i", "/home/pi/partybox/partybox/media/gaga_intro.mp3", "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
-    output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "104.1", "22050"), stdin=sound.stdout) 
+    output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "108.1", "22050"), stdin=sound.stdout) 
     return HttpResponse("sing along...")
 
-def RadioTalk(request):
-
-    StopAudio()    
-
+def RadioTalk(request): 
     print "Time to talk"
+    k_arecord = os.system('killall arecord')
     time.sleep(0.5)
- 
-    talk = subprocess.Popen(["arecord", "-fS16_LE", "-r", "22050", "-Dplughw:1,0", "-d", "100"], stdout=subprocess.PIPE)
-    talk_output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "104.1", "22050"), stdin=talk.stdout)
-    time.sleep(10)
-    talk.kill()
-    talk_output.kill()
 
-    #return_code_output = sound.output()
-    #return_code_output.stdin.write("q")
-    #return_code_sound.stdin.write("q")
+    talk = subprocess.Popen(["arecord", "-fS16_LE", "-r", "22050", "-Dplughw:1,0", "-d", "100"], stdout=subprocess.PIPE)
+    talk_output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "108.1", "22050"), stdin=talk.stdout)
     
-    #RemoveSongFromPlaylist()
-    #SayRadioGaga()
-    #PlaySong()
     return HttpResponse("start talking...")      
 
 def StopAudio():
     try:
+        k_ffmpeg = os.system('killall ffmpeg')
+        termined = True 
+    except:
+        termined = False
+
+    return termined
+      
+    
+def CheckAudio():
+    global sound 
+
+    try:
         return_code_sound = sound.poll()
-        return_code_output = sound.poll()
-
+        print "return code sound: ", return_code_sound 
         if return_code_sound == None:
-            return_code_sound.stdin.write("q")
-            print "song stopped"
-
-        if return_code_output == None:
-            return_code_output.stdin.write("q")
-            print "song output stopped"
+            track_was_on = True
+            print "playing ... "
+        else: 
+            track_was_on = False  
 
     except:
-        print "nothing playing"
+        track_was_on = False
 
-    try: 
-        talk.kill()
-        talk_output.kill()
-    except: 
-        print "no mic stopped"
+    
+    if track_was_on == False:
+        status = "off"
+        print "all of"
+    else:
+        status = "on"
+        print "somethings on"    
+
+    return status
+
+def StartRadio(request):
+    global playing 
+    if playing == False: 
+        k_ffmpeg = os.system('killall ffmpeg')
+        t = threading.Thread(target=CheckTracking)
+        t.setDaemon(True)
+        t.start()
+        playing = True
+     
+    return HttpResponseRedirect('/')
+
+def CheckTracking(): 
+    while True:
+        is_on = CheckAudio()
+        if is_on == "off":
+            TrackPlayer()
+            print "track started"    
+
+        time.sleep(10)
+
