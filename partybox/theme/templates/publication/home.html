@@ -15,7 +15,7 @@
 		surveillance that occurs with mass centralization of digital communication services. 
 	</div>
 		<div class="media steampost text_fill small" ng-show="showInstructions">
-			DataParty is easy as one, two, three.
+			It is easy as one, two, three.
 			<ol>
 				<li>Join the "partyBox" wireless network</li>
 				<li>Open a web browser and goto (for instance) http://h.lan</li>
@@ -67,6 +67,11 @@
 			</button>
 		</span>
                 <span> | Radio controller | </span>   
+		<span class="tracknext">
+			<button class="btn btn-xs startradio" ng-click="startRadio()" >
+				<span class="glyphicon glyphicon-play label label-danger"> </span>
+			</button>
+		</span>
 
 	</div>
 	<hr>
@@ -207,6 +212,7 @@
 			<h4><img src='/media/dj_32.jpg' /> Dj Random Now Playing <span class="playing_type"> </span></h4>  <hr>		
 			<div class="current_song_box">
 				<img class="record" src='/media/80_album.png' width="80"/>
+                                <span>Next: </span>
 				<span class="current_song">{% verbatim %}  {{ lasttrack.title }} by {{ lasttrack.author }} --  {% endverbatim %}</span>
 			</div>
 		{% if user.is_authenticated %}
@@ -243,11 +249,11 @@
 {% block instructions %}
 <div class="media steampost text_fill" >
 	<img class="logoimage" src="/media/nocloud_48.png">
-		DataParty Instructions
+        Instructions
 	<hr>
 	<div>
 		<div class="small">
-			DataParty  is easy as one, two, three.
+			It is easy as one, two, three.
 			<ol>
 				<li>Join the "partyBox" wireless network</li>
 				<li>Open a web browser and goto (for instance) http://h.lan</li>

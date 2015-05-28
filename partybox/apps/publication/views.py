@@ -94,10 +94,14 @@ def JsonTracks(request):
     print l3
     zx = 0; 
     for t in tracks: 
+        if t.author == "unspecified": 
+            t.author = ""
+
         if len(t.title) > 20:
             t.title = t.title[:20] + ".."
         if len(t.author) > 20:
-            t.author = t.author[:20] 
+            t.author = t.author[:23] 
+             
         if len(t.author) + len(t.author) > 39:
              t.author = t.author[:14] 
       
@@ -112,10 +116,13 @@ def JsonPosts(request):
     tracks = Track.objects.all().order_by('-created')[:10]
 
     for t in tracks: 
+        if t.author == "unspecified": 
+            t.author = ""
+
         if len(t.title) > 20:
             t.title = t.title[:20] + ".."
         if len(t.author) > 20:
-            t.author = t.author[:20] 
+            t.author = t.author[:23] 
         if len(t.author) + len(t.author) > 39:
              t.author = t.author[:14] 
              
@@ -712,7 +719,7 @@ def StartFm(request):
 
 def Playfm(request):
     ffmpeg_process = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
-    output = subprocess.check_output(("sudo", "/home/pi/partybox/partybox/pifm", "-" "104.1" "22050"), stdin=ffmpeg_process.stdout)
+    output = subprocess.check_output(("sudo", "/home/pi/partybox/partybox/pifm", "-" "107.1" "22050"), stdin=ffmpeg_process.stdout)
     ffmpeg_process.wait()
 
 #ffmpeg -i 1.mp3 -f s16le -ar 22.05k -ac 1 - | sudo ./pifm -^C
@@ -734,8 +741,9 @@ def TrackPlayer():
     last_song_file = str(settings.PROJECT_ROOT) + "/media/" + str(last_song_pl.track.docfile)
     print "playing: ", last_song_file
     RadioRemoveLastTrack()
+    AddRandomSongToPlaylist()
     sound = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1",  "-"), stdout=subprocess.PIPE)
-    output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "108.1", "22050"), stdin=sound.stdout)
+    output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "107.1", "22050"), stdin=sound.stdout)
     
 
 def tracktimer(duration):
@@ -752,7 +760,7 @@ def SayRadioGaga(request):
     print "radio - gaga ..."
     time.sleep(0.5)
     sound = subprocess.Popen(("ffmpeg", "-i", "/home/pi/partybox/partybox/media/gaga_intro.mp3", "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
-    output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "108.1", "22050"), stdin=sound.stdout) 
+    output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "107.1", "22050"), stdin=sound.stdout) 
     return HttpResponse("sing along...")
 
 def RadioTalk(request): 
@@ -761,7 +769,7 @@ def RadioTalk(request):
     time.sleep(0.5)
 
     talk = subprocess.Popen(["arecord", "-fS16_LE", "-r", "22050", "-Dplughw:1,0", "-d", "100"], stdout=subprocess.PIPE)
-    talk_output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "108.1", "22050"), stdin=talk.stdout)
+    talk_output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "107.1", "22050"), stdin=talk.stdout)
     
     return HttpResponse("start talking...")      
 
@@ -777,7 +785,7 @@ def StopAudio():
     
 def CheckAudio():
     global sound 
-
+    global talk
     try:
         return_code_sound = sound.poll()
         print "return code sound: ", return_code_sound 
@@ -786,11 +794,10 @@ def CheckAudio():
             print "playing ... "
         else: 
             track_was_on = False  
-
     except:
         track_was_on = False
 
-    
+     
     if track_was_on == False:
         status = "off"
         print "all of"
@@ -800,6 +807,12 @@ def CheckAudio():
 
     return status
 
+def CheckMic():
+    try: 
+        print "talk: ", talk.poll, " : ", talk_output.poll
+    except:
+        print "not taking"     
+    
 def StartRadio(request):
     global playing 
     if playing == False: 
@@ -814,9 +827,10 @@ def StartRadio(request):
 def CheckTracking(): 
     while True:
         is_on = CheckAudio()
+        #CheckMic()
         if is_on == "off":
             TrackPlayer()
             print "track started"    
 
-        time.sleep(10)
+        time.sleep(5)
 
