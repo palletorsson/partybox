@@ -1,4 +1,4 @@
-RadioGaGa
+RadioGaga
 ========
 
 * Prepare your Raspberry PI with an SD card with RASPBIAN:
@@ -120,7 +120,7 @@ Add these lines:
 <pre> 
 interface=wlan0
 driver=rtl871xdrv
-ssid=RadioGaGa
+ssid=RadioGaga
 channel=6
 auth_algs=1
 wmm_enabled=0
