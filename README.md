@@ -184,7 +184,7 @@ interface=wlan0
 dhcp-range=192.168.10.1,192.168.10.250,12h
 #no-resolv
 server=8.8.8.8
-
+</pre>
 _ Save and exit 
 * $ sudo service dnsmasq restart
 
