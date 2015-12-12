@@ -1,4 +1,4 @@
-RadioGaga
+Radio Love
 ========
 
 * Prepare your Raspberry PI with an SD card with RASPBIAN:
