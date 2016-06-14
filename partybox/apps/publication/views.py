@@ -351,7 +351,9 @@ def GetFirstSongofPlaylist():
         obj = PlayList.objects.get(pk=1).tracklisted_set.all().order_by('-position')[0]
         print "to del: ", obj
     except PlayList.DoesNotExist:
-        obj = False     
+        obj = False 
+        AddRandomSongToPlaylist()
+        GetFirstSongofPlaylist()
     return obj
 
 def fixlist(radio_list): 
@@ -720,19 +722,75 @@ def epoch(value):
         return ''
 
 # radio logic
+# new logic
+def StartSongFm(request):
+    PlaySongFm()
+    talk_state = False
+    MicTracking(talk_state)
+
+# play song if not vioce
+def PlaySongFm():
+    kill_all_sound()
+    last_song_file = GetFirstSongofPlaylist() 
+    last_song_file = str(settings.PROJECT_ROOT) + "/media/" + str(last_song_file.track.docfile)
+    omx_process = subprocess.Popen(("oxmplayer", "local", last_song_file), stdout=subprocess.PIPE)
+    #ffmpeg_process = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
+    output = subprocess.check_output(("sudo", "/home/pi/partybox/partybox/pifm", "-" "107.1" "22050"), stdin=omx_process.stdout)
+    # wait for song to play
+    omx_process.wait()
+    PlaySongFm()
+
+def RadioTalk(): 
+    kill_all_sound()
+    time.sleep(0.1)
+
+    talk = subprocess.Popen(["arecord", "-fS16_LE", "-r", "22050", "-Dplughw:1,0", "-d", "100"], stdout=subprocess.PIPE)
+    talk_output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "107.1", "22050"), stdin=talk.stdout)
+    
+    return HttpResponse("start talking...")      
+
+
+def MicTracking(talk_state):
+    while True:
+        
+        input_state = GPIO.input(18)
+
+        # if button press 
+        if input_state == False:
+            if talk_state == False: 
+                talk_state = True
+                # enable talk  
+                RadioTalk() 
+            else: 
+                talk_state = False
+                PlaySongFm()
+
+        time.sleep(1)
+        MicTracking(talk_state)
+
+def kill_all_sound():
+    os.system('killall omxplayer.bin')
+    os.system('killall ffmpeg')
+    os.system('killall arecord')
+    return True
+
+
+# old logic
 global sound 
 global talk
 global output
 global talk_output
 
 def StartFm(request):
-    Playfm()
+    Playfm(request)
 
 def Playfm(request):
-    ffmpeg_process = subprocess.Popen(("omxplayer", "local", last_song_file), stdout=subprocess.PIPE)
+    kill_all_sound()
+    ffmpeg_process = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1",  "-"), stdout=subprocess.PIPE)
     #ffmpeg_process = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
     output = subprocess.check_output(("sudo", "/home/pi/partybox/partybox/pifm", "-" "107.1" "22050"), stdin=ffmpeg_process.stdout)
     ffmpeg_process.wait()
+
 
 #ffmpeg -i 1.mp3 -f s16le -ar 22.05k -ac 1 - | sudo ./pifm -^C
 def playNextSong(request):
@@ -838,7 +896,8 @@ def CheckMic():
         print "talk: ", talk.poll, " : ", talk_output.poll
     except:
         print "not taking"     
-    
+   
+
 def StartRadio(request):
     global playing 
     global mic
