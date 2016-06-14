@@ -31,14 +31,22 @@ from hachoir_core.error import HachoirError
 from hachoir_core.stream import InputIOStream
 from hachoir_parser import guessParser
 from hachoir_metadata import extractMetadata
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BCM)
+
+GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 playmode = 'A' 
 playing = False
-    
+mic = False 
+
+# the project is build on a principal of captive urls    
 def CaptureAll(request):
     return HttpResponseRedirect('/home/')
 
-
+# add post message, jpg, mp3 or pdf
 def AddPost(request):
     if request.POST:
         fileExtension = None
@@ -68,25 +76,28 @@ def AddPost(request):
 def Home(request):  
     return render_to_response('publication/home.html',  context_instance=RequestContext(request))
 
-
+# helper urls 
 def fallback(request):
     return HttpResponseRedirect('/')
 
 def handler404(request):
     return HttpResponseRedirect('/')
 
+# get json format of messages
 def JsonMessages(request):
     messages = TextPost.objects.all().order_by('-created')
     json_list = serializers.serialize('json', messages)
     response = HttpResponse(json_list, mimetype='application/json')
     return response
 
+# get json format of images
 def JsonImages(request):
     images = ImagePost.objects.all().order_by('-created')
     json_list = serializers.serialize('json', images)
     response = HttpResponse(json_list, mimetype='application/json')
     return response
 
+# get json format of mp3s
 def JsonTracks(request): 
     tracks = Track.objects.all().order_by('-created')
     radio_list = getlastplaylist()
@@ -110,7 +121,7 @@ def JsonTracks(request):
     response = HttpResponse(json_list, mimetype='application/json')
     return response
 
-
+# get json format of all posts
 def JsonPosts(request):
     texts = TextPost.objects.all().order_by('-created')[:30]  
     tracks = Track.objects.all().order_by('-created')[:10]
@@ -140,6 +151,7 @@ def JsonPosts(request):
     response = HttpResponse(json_list, mimetype='application/json')
     return response
 
+# get json format of PDFs
 def JsonFiles(request):
     doc_files = DocPost.objects.all().order_by('-created')
 
@@ -151,6 +163,7 @@ def JsonFiles(request):
     response = HttpResponse(json_list, mimetype='application/json')
     return response
 
+# get all posts
 def Posts(request):
     texts = TextPost.objects.all().order_by('-created')
     images = ImagePost.objects.all().order_by('-created')
@@ -278,7 +291,7 @@ def RadioRemoveLastTrack():
     except:
         print "not track to delete"
   
-    
+# this function is not needed for the moment    
 def IsTrackDone(request, current_track): 
     # set track done to false
     track_is_done = False
@@ -326,8 +339,6 @@ def AddRandomSongToPlaylist():
         pass
     return True
      
-
-
 def getlastplaylist():
     try:
         radio_list = PlayList.objects.get(pk=1).tracklisted_set.all().order_by('-position')
@@ -718,7 +729,8 @@ def StartFm(request):
     Playfm()
 
 def Playfm(request):
-    ffmpeg_process = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
+    ffmpeg_process = subprocess.Popen(("omxplayer", "local", last_song_file), stdout=subprocess.PIPE)
+    #ffmpeg_process = subprocess.Popen(("ffmpeg", "-i", last_song_file, "-f", "s16le", "-ar", "22.05k", "-ac", "1", "-"), stdout=subprocess.PIPE)
     output = subprocess.check_output(("sudo", "/home/pi/partybox/partybox/pifm", "-" "107.1" "22050"), stdin=ffmpeg_process.stdout)
     ffmpeg_process.wait()
 
@@ -766,6 +778,7 @@ def SayRadioGaga(request):
 def RadioTalk(request): 
     print "Time to talk"
     k_arecord = os.system('killall arecord')
+    StopAudio()    
     time.sleep(0.5)
 
     talk = subprocess.Popen(["arecord", "-fS16_LE", "-r", "22050", "-Dplughw:1,0", "-d", "100"], stdout=subprocess.PIPE)
@@ -773,6 +786,15 @@ def RadioTalk(request):
     
     return HttpResponse("start talking...")      
 
+def InterRadiotalk(): 
+    k_arecord = os.system('killall arecord')
+    StopAudio()    
+    talk = subprocess.Popen(["arecord", "-fS16_LE", "-r", "22050", "-Dplughw:1,0", "-d", "100"], stdout=subprocess.PIPE)
+    talk_output = subprocess.Popen(("sudo", "/home/pi/partybox/partybox/pifm", "-", "107.1", "22050"), stdin=talk.stdout)
+    print "start talking..."      
+
+    return True
+ 
 def StopAudio():
     try:
         k_ffmpeg = os.system('killall ffmpeg')
@@ -786,9 +808,10 @@ def StopAudio():
 def CheckAudio():
     global sound 
     global talk
+    global mic
     try:
         return_code_sound = sound.poll()
-        print "return code sound: ", return_code_sound 
+        #print "return code sound: ", return_code_sound 
         if return_code_sound == None:
             track_was_on = True
             print "playing ... "
@@ -800,11 +823,14 @@ def CheckAudio():
      
     if track_was_on == False:
         status = "off"
-        print "all of"
+        print "track of"
     else:
         status = "on"
-        print "somethings on"    
+        #print "somethings on"    
 
+    if mic == True: 
+        status = "on"
+   
     return status
 
 def CheckMic():
@@ -815,7 +841,9 @@ def CheckMic():
     
 def StartRadio(request):
     global playing 
-    if playing == False: 
+    global mic
+    if playing == False:
+        mic = False 
         k_ffmpeg = os.system('killall ffmpeg')
         t = threading.Thread(target=CheckTracking)
         t.setDaemon(True)
@@ -824,13 +852,34 @@ def StartRadio(request):
      
     return HttpResponseRedirect('/')
 
-def CheckTracking(): 
+def ToggleMic(): 
+    global mic
+    if mic == True: 
+        TrackPlayer()
+        mic = False
+        time.sleep(2)
+        return True
+
+    if mic == False: 
+        InterRadiotalk() 
+        mic = True
+        return True
+ 
+
+def CheckTracking():
+    global mic
     while True:
+        
         is_on = CheckAudio()
-        #CheckMic()
+        input_state = GPIO.input(18)
+
+        if input_state == False:
+            ToggleMic()  
+            print "toggle mic"
+
         if is_on == "off":
             TrackPlayer()
             print "track started"    
 
-        time.sleep(5)
+        time.sleep(1)
 
